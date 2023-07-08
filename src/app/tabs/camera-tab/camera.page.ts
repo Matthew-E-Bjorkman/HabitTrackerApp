@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule, ActionSheetController } from '@ionic/angular';
-import { PhotoService, UserPhoto } from '../services/photo.service';
+import { PhotoService, UserPhoto } from '../../services/photo/photo.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

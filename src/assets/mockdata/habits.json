@@ -1,0 +1,13 @@
+{
+    "habits": [
+        {
+            "habitName":"Brush Teeth"
+        },
+        {
+            "habitName":"Drink Water"
+        },
+        {
+            "habitName":"Exercise"
+        }
+    ]
+}
