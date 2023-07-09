@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { HabitService } from 'src/app/services/habit/habit.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { HabitDataItem, HabitDataList } from 'src/app/mock-data/mock-data.service';
+import { Habit } from 'src/app/shared/data-classes/data-objects';
 
 @Component({
   selector: 'app-habit-list',
@@ -13,17 +13,14 @@ import { HabitDataItem, HabitDataList } from 'src/app/mock-data/mock-data.servic
   imports: [IonicModule, CommonModule, HttpClientModule],
   providers: [HabitService, HttpClient]
 })
-export class HabitListComponent  implements OnInit {
-  habits!: HabitDataItem[];
+export class HabitListComponent {
+  habits!: Habit[];
 
-  constructor(public httpClient: HttpClient, public habitService: HabitService) { }
-
-  ngOnInit() {
-    this.habitService.getHabits().then((result) => {
+  constructor(public httpClient: HttpClient, public habitService: HabitService) { 
+    this.habitService.getHabits((result) => {
       if (result.habits) {
         this.habits = result.habits;
       }
     });
   }
-
 }

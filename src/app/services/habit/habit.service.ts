@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
+import { HabitList } from 'src/app/shared/data-classes/data-containers';
 import { MockDataService } from 'src/app/mock-data/mock-data.service';
 
 @Injectable({
@@ -13,7 +14,9 @@ export class HabitService {
     this.mockDataService = new MockDataService(httpClient);
   }
 
-  public async getHabits() {
-    return this.mockDataService.getData().habitList;
+  public getHabits(callback: (param: HabitList) => void) {
+    this.mockDataService.getData(function (data) {
+      callback(data.habitList);
+    });
   }
 }

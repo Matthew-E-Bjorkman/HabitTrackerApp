@@ -1,13 +1,38 @@
 {
     "habits": [
         {
-            "habitName":"Brush Teeth"
+            "Name":"Brush Teeth",
+            "Icon":0,
+            "Type":0,
+            "FrequencyCategory":0,
+            "FrequencyCategoryValue":"0",
+            "IsArchived":false
         },
         {
-            "habitName":"Drink Water"
+            "Name":"Drink Water",
+            "Icon":1,
+            "Type":1,
+            "FrequencyCategory":1,
+            "FrequencyCategoryValue":"0|3|5",
+            "IsArchived":false
+            
         },
         {
-            "habitName":"Exercise"
+            "Name":"Exercise",
+            "Icon":2,
+            "Type":2,
+            "FrequencyCategory":0,
+            "FrequencyCategoryValue":"0",
+            "IsArchived":true
+        }
+        ,
+        {
+            "Name":"Journal",
+            "Icon":3,
+            "Type":0,
+            "FrequencyCategory":2,
+            "FrequencyCategoryValue":"0|1|12",
+            "IsArchived":false
         }
     ]
 }
