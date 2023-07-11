@@ -1,22 +1,59 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
-import { HabitList } from 'src/app/shared/data-classes/data-containers';
-import { MockDataService } from 'src/app/mock-data/mock-data.service';
+import { Storage } from '@ionic/storage-angular';
+import { Habit } from 'src/app/shared/data-classes/data-objects';
+import { EventQueueService } from '../event-queue/event-queue.service';
+import { AppEvent, AppEventType } from 'src/app/shared/events';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HabitService {
-  mockDataService!: MockDataService;
+  storageInstantiated: boolean = false;
 
-  constructor(public platform: Platform, public httpClient: HttpClient) { 
-    this.mockDataService = new MockDataService(httpClient);
+  constructor(public platform: Platform, public storage: Storage, private eventQueueService: EventQueueService) { }
+
+  public async init() {
+    this.storage = await this.storage.create();
   }
 
-  public getHabits(callback: (param: HabitList) => void) {
-    this.mockDataService.getData(function (data) {
-      callback(data.habitList);
+  public saveHabit(habit: Habit) {
+    this.getHabits((result) => {
+      result.push(habit);
+      this.saveHabits(result);
+    });
+  }
+
+  public async saveHabits(habits: Habit[]) {
+    if (!this.storageInstantiated) {
+      await this.init();
+    }
+
+    this.storage?.set('habits', habits);
+    this.eventQueueService.dispatch(new AppEvent(AppEventType.HabitListUpdated, null))
+  }
+
+  public async getHabits(callback: (param: Habit[]) => void) {
+    if (!this.storageInstantiated) {
+      await this.init();
+    }
+
+    this.storage?.get('habits').then((data) => {
+      if (data == null) {
+        var habitList: Habit[] = [];
+        callback(habitList);
+      }
+      else {
+        callback(data);
+      }
+    })
+  }
+
+  public deleteHabit(habit: Habit) {
+    this.getHabits((result) => {
+      var index = result.indexOf(habit);
+      result.splice(index, 1);
+      this.saveHabits(result);
     });
   }
 }

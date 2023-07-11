@@ -1,0 +1,18 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>Manage Habits</ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-list *ngFor="let habit of habits" class="ion-list">
+      <ion-item class="ion-item" *ngIf="!habit.IsArchived">
+        <ion-label>{{habit.Name}}</ion-label>
+        <ion-button (click)="deleteHabit(habit)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+    <ion-button aria-label="Add a new Habit" (click)="createHabit()">
+      <ion-icon slot="icon-only" name="add"></ion-icon>
+    </ion-button>
+  </ion-card-content>
+</ion-card>
