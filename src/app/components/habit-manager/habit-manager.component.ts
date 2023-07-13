@@ -6,17 +6,20 @@ import { HabitService } from 'src/app/services/habit/habit.service';
 import { Habit } from 'src/app/shared/data-classes/data-objects';
 import { AppEventType } from 'src/app/shared/events';
 import { OverlayEventDetail } from '@ionic/core/components';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-habit-manager',
   templateUrl: './habit-manager.component.html',
   styleUrls: ['./habit-manager.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule]
+  imports: [IonicModule, CommonModule, FormsModule]
 })
 export class HabitManagerComponent implements OnInit {
   @ViewChild(IonModal) modal!: IonModal;
   habits!: Habit[];
+  habit: Habit = new Habit();
 
   constructor(public habitService: HabitService, private eventQueueService: EventQueueService) { 
     this.getHabits();
@@ -35,9 +38,7 @@ export class HabitManagerComponent implements OnInit {
   }
 
   public createHabit() {
-    var habit = new Habit();
-    habit.Name = "Habit " + (this.habits.length + 1);
-    this.habitService.saveHabit(habit);
+    this.habitService.saveHabit(this.habit);
   }
 
   public deleteHabit(habit: Habit) {
