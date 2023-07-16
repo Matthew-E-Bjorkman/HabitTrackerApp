@@ -60,7 +60,14 @@ export class IconSelectModalComponent implements OnInit {
        */
       const normalizedQuery = searchQuery.toLowerCase();
       this.filteredIcons = this.sysIcons.filter((sysIcon) => {
-        return sysIcon.name.toLowerCase().includes(normalizedQuery);
+        var match = false;
+        sysIcon.tags.forEach(tag => {
+          if (tag.toLowerCase().includes(normalizedQuery)) {
+            match = true;
+          }
+        });
+
+        return match || sysIcon.name.toLowerCase().includes(normalizedQuery);
       });
     }
   }
