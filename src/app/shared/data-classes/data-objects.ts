@@ -4,7 +4,7 @@ import * as DataEnums from "./data-enums";
 export class Habit {
     "HabitSID": number;
     "Name": string;
-    "Icon": DataEnums.HabitIcon;
+    "Icon": string;
     "Type": DataEnums.HabitType;
     "FrequencyCategory": DataEnums.HabitFrequencyCategory;
     "FrequencyCategoryValues": number[];

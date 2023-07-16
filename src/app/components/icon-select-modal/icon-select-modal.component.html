@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancelChanges()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>{{ title }}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar color="primary">
+    <ion-searchbar (ionInput)="searchbarInput($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="primary" class="ion-padding">
+  <ion-list id="modal-list" [inset]="true">
+    <ion-item *ngFor="let sysIcon of filteredIcons">
+      <ion-button (click)="selected(sysIcon)"> 
+        <ion-icon name="{{sysIcon.name}}"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-list>
+</ion-content>

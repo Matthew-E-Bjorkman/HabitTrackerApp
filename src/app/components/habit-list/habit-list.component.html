@@ -5,7 +5,7 @@
   <ion-card-content>
     <ion-list *ngFor="let habit of habits" class="ion-list">
       <ion-item class="ion-item" *ngIf="!habit.IsArchived">
-        <ion-label>{{habit.Icon}}</ion-label>
+        <ion-icon name="{{habit.Icon}}"></ion-icon>
         <ion-label>{{habit.Name}}</ion-label>
       </ion-item>
     </ion-list>

@@ -1,11 +1,4 @@
 /* Habits */
-export enum HabitIcon {
-    "Temp0",
-    "Temp1",
-    "Temp2",
-    "Temp3",
-    "Temp4"
-}
 export enum HabitType {
     "Hygeine",
     "Wellness",
