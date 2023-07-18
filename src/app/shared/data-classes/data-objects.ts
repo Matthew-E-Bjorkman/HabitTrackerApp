@@ -2,7 +2,7 @@ import * as DataEnums from "./data-enums";
 
 /* Habit */
 export class Habit {
-    "HabitSID": number;
+    "HabitSID": string;
     "Name": string;
     "Icon": string;
     "Type": DataEnums.HabitType;
@@ -13,7 +13,7 @@ export class Habit {
 
 /* Habit_Streak */
 export class HabitStreak {
-    "HabitStreakSID": number;
+    "HabitStreakSID": string;
     "HabitSID": number;
     "StartDate": Date;
     "EndDate": Date;
@@ -23,7 +23,7 @@ export class HabitStreak {
 
 /* Habit_Reminder */
 export class HabitReminder {
-    "HabitReminderSID": number;
+    "HabitReminderSID": string;
     "HabitSID": number;
     "ReminderTime": Date;
 }

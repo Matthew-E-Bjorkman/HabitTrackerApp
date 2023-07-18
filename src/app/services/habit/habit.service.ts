@@ -4,6 +4,7 @@ import { Storage } from '@ionic/storage-angular';
 import { Habit } from 'src/app/shared/data-classes/data-objects';
 import { EventQueueService } from '../event-queue/event-queue.service';
 import { AppEvent, AppEventType } from 'src/app/shared/events';
+import { v4 as uuid } from 'uuid';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,16 @@ export class HabitService {
 
   public saveHabit(habit: Habit) {
     this.getHabits((result) => {
-      result.push(habit);
+      var existingHabit = result.find(x => x.HabitSID === habit.HabitSID);
+
+      if (existingHabit) {
+        var index = result.indexOf(existingHabit);
+        result[index] = habit;
+      }
+      else {
+        result.push(habit);
+      }
+      
       this.saveHabits(result);
     });
   }
@@ -55,5 +65,12 @@ export class HabitService {
       result.splice(index, 1);
       this.saveHabits(result);
     });
+  }
+
+  public getNewHabit() : Habit {
+    var habit = new Habit();
+    habit.HabitSID = uuid();
+    habit.Icon = 'checkmark-circle-outline';
+    return habit;
   }
 }

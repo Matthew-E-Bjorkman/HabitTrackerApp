@@ -11,8 +11,7 @@ import { AppEventType } from 'src/app/shared/events';
   templateUrl: './habit-list.component.html',
   styleUrls: ['./habit-list.component.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
-  providers: [HabitService]
+  imports: [IonicModule, CommonModule]
 })
 export class HabitListComponent implements OnInit {
   habits!: Habit[];

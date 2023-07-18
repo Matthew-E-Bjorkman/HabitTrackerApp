@@ -7,64 +7,16 @@
       <ion-item class="ion-item" *ngIf="!habit.IsArchived">
         <ion-icon name="{{habit.Icon}}"></ion-icon>
         <ion-label>{{habit.Name}}</ion-label>
+        <ion-button (click)="addEditHabit(habit)">
+          <ion-icon slot="icon-only" name="pencil"></ion-icon>
+        </ion-button>
         <ion-button (click)="deleteHabit(habit)">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
         </ion-button>
       </ion-item>
     </ion-list>
-    <ion-button id="open-modal" expand="block">
+    <ion-button (click)="addEditHabit(null)" expand="block">
       <ion-icon slot="icon-only" name="add"></ion-icon>
     </ion-button>
-    <!-- HABIT ADD MODAL -->
-    <ion-modal trigger="open-modal" (willDismiss)="onWillDismiss($event)" (willPresent)="onWillPresent($event)" #modal>
-      <ng-template>
-        <ion-header>
-          <ion-toolbar color="tertiary">
-            <ion-buttons slot="start">
-              <ion-button (click)="cancel()">Cancel</ion-button>
-            </ion-buttons>
-            <ion-title>Create a Habit</ion-title>
-            <ion-buttons slot="end">
-              <ion-button (click)="confirm()" [strong]="true">Confirm</ion-button>
-            </ion-buttons>
-          </ion-toolbar>
-        </ion-header>
-        <ion-content class="ion-padding" color="primary">
-          <ion-item>
-            <ion-label position="stacked">Habit Name:</ion-label>
-            <ion-input type="text" placeholder="Brush Teeth" [(ngModel)]="habit.Name" legacy="true"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked">Habit Icon:</ion-label>
-            <ion-input type="button" id="select-icons" legacy="true">
-              <ion-icon name="{{habit.Icon}}"></ion-icon>
-            </ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked">Habit Type:</ion-label>
-            <ion-input type="text" placeholder="Health" [(ngModel)]="habit.Type" legacy="true"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked">Habit Schedule:</ion-label>
-            <ion-input type="text" placeholder="Weekly" [(ngModel)]="habit.FrequencyCategory" legacy="true"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="stacked">Habit Schedule Days:</ion-label>
-            <ion-input type="text" placeholder="Monday,Tuesday" [(ngModel)]="habit.FrequencyCategoryValues" legacy="true"></ion-input>
-          </ion-item>
-        </ion-content>
-      </ng-template>
-    </ion-modal>
-    <!-- ICON SELECT MODAL -->
-    <ion-modal [trigger]="modalEnabled() ? 'select-icons' : undefined" #iconModal>
-      <ng-template>
-        <app-icon-select-modal
-          class="ion-page"
-          title="Habit Icons"
-          (selectionChange)="iconSelectionChanged($event);iconModal.dismiss();"
-          (selectionCancel)="iconModal.dismiss()"
-        ></app-icon-select-modal>
-      </ng-template>
-    </ion-modal>
   </ion-card-content>
 </ion-card>

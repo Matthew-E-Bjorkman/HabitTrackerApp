@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import type { OnInit } from '@angular/core';
 import { SysIcon } from 'src/app/shared/system-classes/system-objects';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { SystemDataService } from 'src/app/services/system-data/system-data.service';
 
@@ -13,16 +13,10 @@ import { SystemDataService } from 'src/app/services/system-data/system-data.serv
   imports: [IonicModule, CommonModule]
 })
 export class IconSelectModalComponent implements OnInit {
-  constructor(private systemDataService: SystemDataService) {}
+  constructor(private systemDataService: SystemDataService, private modalController: ModalController) {}
 
-  @Input() sysIcons: SysIcon[] = [];
-  @Input() selectedIcon!: SysIcon;
-  @Input() title = 'Select Icons';
-
-  @Output() selectionCancel = new EventEmitter<void>();
-  @Output() selectionChange = new EventEmitter<SysIcon>();
-
-  filteredIcons: SysIcon[] = [];
+  sysIcons!: SysIcon[];
+  filteredIcons!: SysIcon[];
 
   ngOnInit() {
     this.systemDataService.getIcons((result) => {
@@ -32,32 +26,17 @@ export class IconSelectModalComponent implements OnInit {
   }
 
   cancelChanges() {
-    this.selectionCancel.emit();
+    this.modalController.dismiss();
   }
 
   searchbarInput(ev: any) {
     this.filterList(ev.target.value);
   }
 
-  /**
-   * Update the rendered view with
-   * the provided search query. If no
-   * query is provided, all data
-   * will be rendered.
-   */
   filterList(searchQuery: string | undefined) {
-    /**
-     * If no search query is defined,
-     * return all options.
-     */
     if (searchQuery === undefined) {
       this.filteredIcons = [...this.sysIcons];
     } else {
-      /**
-       * Otherwise, normalize the search
-       * query and check to see which items
-       * contain the search query as a substring.
-       */
       const normalizedQuery = searchQuery.toLowerCase();
       this.filteredIcons = this.sysIcons.filter((sysIcon) => {
         var match = false;
@@ -73,8 +52,7 @@ export class IconSelectModalComponent implements OnInit {
   }
 
   selected(sysIcon: SysIcon) {
-    this.selectedIcon = sysIcon;
-    this.selectionChange.emit(this.selectedIcon);
+    this.modalController.dismiss(sysIcon);
   }
 
 }
