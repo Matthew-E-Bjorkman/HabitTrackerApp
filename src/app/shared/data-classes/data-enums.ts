@@ -1,17 +1,24 @@
 /* Habits */
 export enum HabitType {
+    "Health",
     "Hygeine",
     "Wellness",
     "Study"
 }
+export const HabitTypeLabelMap : Record<HabitType, string> = {
+    [HabitType.Health]: "Health",
+    [HabitType.Hygeine]: "Hygeine",
+    [HabitType.Wellness]: "Wellness",
+    [HabitType.Study]: "Study",
+}
+
 export enum HabitFrequencyCategory {
     "Daily",
     "Weekly",
     "Monthly"
 }
-export enum HabitDailyFrequency {
-    "Daily"
-}
+
+
 export enum HabitWeeklyFrequency {
     "Monday",
     "Tuesday",
@@ -21,6 +28,8 @@ export enum HabitWeeklyFrequency {
     "Saturday",
     "Sunday"
 }
+
+
 export enum HabitMonthlyFrequency {
     "1st",
     "2nd",

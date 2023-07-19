@@ -22,14 +22,40 @@
   </ion-item>
   <ion-item>
     <ion-label position="stacked">Habit Type:</ion-label>
-    <ion-input type="text" placeholder="Health" [(ngModel)]="habit.Type" legacy="true"></ion-input>
+    <ion-select placeholder="Health" [(ngModel)]="habit.Type">
+      <ion-select-option *ngFor="let habitTypeKey of habitTypeKeys" [value]="habitTypeKey">
+        {{habitTypes[habitTypeKey]}}
+      </ion-select-option>
+    </ion-select>
   </ion-item>
   <ion-item>
     <ion-label position="stacked">Habit Schedule:</ion-label>
-    <ion-input type="text" placeholder="Weekly" [(ngModel)]="habit.FrequencyCategory" legacy="true"></ion-input>
+    <ion-select placeholder="Daily" [(ngModel)]="habit.FrequencyCategory" (ngModelChange)="habitFrequencyChanged(habit.FrequencyCategory)">
+      <ion-select-option *ngFor="let habitFrequencyCategoryKey of habitFrequencyCategoryKeys" 
+      [value]="habitFrequencyCategoryKey">
+        {{habitFrequencyCategories[habitFrequencyCategoryKey]}}
+      </ion-select-option>
+    </ion-select>
   </ion-item>
-  <ion-item>
+  <!-- <ion-item *ngIf="habitDaily | async">
+    Nothing, only Daily is valid
+  </ion-item> -->
+  <ion-item *ngIf="habitWeekly | async">
     <ion-label position="stacked">Habit Schedule Days:</ion-label>
-    <ion-input type="text" placeholder="Monday,Tuesday" [(ngModel)]="habit.FrequencyCategoryValues" legacy="true"></ion-input>
+    <ion-select placeholder="Monday,Wednesday" [(ngModel)]="habit.FrequencyCategoryValues" [multiple]="true">
+      <ion-select-option *ngFor="let habitWeeklyFrequencyKey of habitWeeklyFrequencyKeys" 
+      [value]="habitWeeklyFrequencyKey">
+        {{habitWeeklyFrequencies[habitWeeklyFrequencyKey]}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
+  <ion-item *ngIf="habitMonthly | async">
+    <ion-label position="stacked">Habit Schedule Days:</ion-label>
+    <ion-select placeholder="1st,8th,15th" [(ngModel)]="habit.FrequencyCategoryValues" [multiple]="true">
+      <ion-select-option *ngFor="let habitMonthlyFrequencyKey of habitMonthlyFrequencyKeys" 
+      [value]="habitMonthlyFrequencyKey">
+        {{habitMonthlyFrequencies[habitMonthlyFrequencyKey]}}
+      </ion-select-option>
+    </ion-select>
   </ion-item>
 </ion-content>
