@@ -15,8 +15,8 @@ export class HabitRepoService {
   constructor(public platform: Platform, public storage: Storage, private eventQueueService: EventQueueService) { }
 
   public async init() {
-    this.storageInstantiated = true;
     this.storage = await this.storage.create();
+    this.storageInstantiated = true;
   }
 
   public refreshHabitLists() {
