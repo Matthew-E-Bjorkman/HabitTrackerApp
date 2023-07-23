@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component } from '@angular/core';
 import type { OnInit } from '@angular/core';
 import { SysIcon } from 'src/app/shared/system-classes/system-objects';
 import { IonicModule, ModalController } from '@ionic/angular';

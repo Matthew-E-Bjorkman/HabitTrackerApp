@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { EventQueueService } from 'src/app/services/event-queue/event-queue.service';
-import { HabitService } from 'src/app/services/habit/habit.service';
+import { HabitRepoService } from 'src/app/services/habit-repo/habit-repo.service';
 import { Habit } from 'src/app/shared/data-classes/data-objects';
 import { AppEventType } from 'src/app/shared/events';
 import { FormsModule } from '@angular/forms';
@@ -19,7 +19,7 @@ export class HabitManagerComponent implements OnInit {
   modal!: HTMLIonModalElement;
   habits!: Habit[];
 
-  constructor(private habitService: HabitService, private eventQueueService: EventQueueService, private modalController: ModalController) { }
+  constructor(private habitRepoService: HabitRepoService, private eventQueueService: EventQueueService, private modalController: ModalController) { }
 
   ngOnInit(): void {
     this.getHabits();
@@ -27,19 +27,17 @@ export class HabitManagerComponent implements OnInit {
   }
 
   private getHabits() {
-    this.habitService.getHabits((result) => {
-      if (result) {
-        this.habits = result;
-      }
+    this.habitRepoService.getHabits().then((result) => {
+      this.habits = result ?? [];
     });
   }
 
   public createHabit(habit: Habit) {
-    this.habitService.saveHabit(habit);
+    this.habitRepoService.saveHabit(habit);
   }
 
   public deleteHabit(habit: Habit) {
-    this.habitService.deleteHabit(habit);
+    this.habitRepoService.deleteHabit(habit);
   }
 
   public async addEditHabit(habit: Habit | null) {

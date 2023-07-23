@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { HabitService } from './habit.service';
+import { HabitRepoService } from './habit-repo.service';
 
-describe('HabitService', () => {
-  let service: HabitService;
+describe('HabitRepoService', () => {
+  let service: HabitRepoService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(HabitService);
+    service = TestBed.inject(HabitRepoService);
   });
 
   it('should be created', () => {

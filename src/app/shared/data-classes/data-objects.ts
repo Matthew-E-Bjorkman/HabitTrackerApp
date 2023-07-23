@@ -14,7 +14,7 @@ export class Habit {
 /* Habit_Streak */
 export class HabitStreak {
     "HabitStreakSID": string;
-    "HabitSID": number;
+    "HabitSID": string;
     "StartDate": Date;
     "EndDate": Date;
     "StreakCount": number;
@@ -24,6 +24,6 @@ export class HabitStreak {
 /* Habit_Reminder */
 export class HabitReminder {
     "HabitReminderSID": string;
-    "HabitSID": number;
+    "HabitSID": string;
     "ReminderTime": Date;
 }

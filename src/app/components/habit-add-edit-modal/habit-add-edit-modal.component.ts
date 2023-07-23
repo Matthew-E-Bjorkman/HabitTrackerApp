@@ -3,9 +3,9 @@ import { Component, Input, OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { Habit } from 'src/app/shared/data-classes/data-objects';
-import { HabitFrequencyCategory, HabitType, HabitTypeLabelMap, HabitWeeklyFrequency, HabitMonthlyFrequency } from 'src/app/shared/data-classes/data-enums';
+import { HabitFrequencyCategory, HabitType, HabitWeeklyFrequency, HabitMonthlyFrequency } from 'src/app/shared/data-classes/data-enums';
 import { IconSelectModalComponent } from '../icon-select-modal/icon-select-modal.component';
-import { HabitService } from 'src/app/services/habit/habit.service';
+import { HabitRepoService } from 'src/app/services/habit-repo/habit-repo.service';
 import { Observable } from 'rxjs';
 
 
@@ -19,6 +19,8 @@ import { Observable } from 'rxjs';
 export class HabitAddEditModalComponent  implements OnInit {
   @Input() habit!: Habit;
   @Input() modal!: HTMLIonModalElement;
+
+  private origHabit! : Habit;
 
   public habitTypeKeys = Object.values(HabitType).filter(x => typeof x === 'number') as number[];
   public habitTypes = HabitType;
@@ -36,18 +38,21 @@ export class HabitAddEditModalComponent  implements OnInit {
   public habitWeekly!: Observable<boolean>;
   public habitMonthly!: Observable<boolean>;
 
-  constructor(private habitService: HabitService, private modalController: ModalController) { }
+  constructor(private habitRepoService: HabitRepoService, private modalController: ModalController) { }
 
   ngOnInit(): void {
     if (!this.habit) {
-      this.habit = this.habitService.getNewHabit();
+      this.habit = this.habitRepoService.getNewHabit();
     }
     else {
+      this.origHabit = {... this.habit};
       this.habitFrequencyChanged(this.habit.FrequencyCategory);
+      this.habit = this.origHabit;
     }
   }
 
   public habitFrequencyChanged(newFrequency: HabitFrequencyCategory) {
+    this.habit.FrequencyCategoryValues = [];
     switch (newFrequency) {
       case HabitFrequencyCategory.Daily: {
         this.habitDaily = new Observable(obs => obs.next(true));
@@ -71,6 +76,7 @@ export class HabitAddEditModalComponent  implements OnInit {
   }
 
   public cancel() {
+    this.habitRepoService.refreshHabitLists();      
     this.modal.dismiss();
   }
 

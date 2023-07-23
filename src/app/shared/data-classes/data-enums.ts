@@ -5,12 +5,6 @@ export enum HabitType {
     "Wellness",
     "Study"
 }
-export const HabitTypeLabelMap : Record<HabitType, string> = {
-    [HabitType.Health]: "Health",
-    [HabitType.Hygeine]: "Hygeine",
-    [HabitType.Wellness]: "Wellness",
-    [HabitType.Study]: "Study",
-}
 
 export enum HabitFrequencyCategory {
     "Daily",
