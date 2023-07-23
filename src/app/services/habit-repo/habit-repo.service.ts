@@ -15,6 +15,7 @@ export class HabitRepoService {
   constructor(public platform: Platform, public storage: Storage, private eventQueueService: EventQueueService) { }
 
   public async init() {
+    this.storageInstantiated = true;
     this.storage = await this.storage.create();
   }
 
@@ -23,65 +24,15 @@ export class HabitRepoService {
   }
 
   public saveHabit(habit: Habit) {
-    this.getHabits().then((result : Habit[]) => {
-      if (!result) {
-        result = [];
-      }
-
-      var existingHabit = result.find(x => x.HabitSID === habit.HabitSID);
-
-      if (existingHabit) {
-        var index = result.indexOf(existingHabit);
-        result[index] = habit;
-      }
-      else {
-        result.push(habit);
-      }
-      
-      this.saveHabits(result);
-    });
+    this.saveObject(habit, 'habits', 'HabitSID', new AppEvent(AppEventType.HabitListUpdated, null));
   }
 
-  public async saveHabits(habits: Habit[]) {
-    if (!this.storageInstantiated) {
-      await this.init();
-    }
-
-    if (habits.length == 0) {
-      return;
-    }
-
-    this.storage.set('habits', habits).then(() => {
-      this.eventQueueService.dispatch(new AppEvent(AppEventType.HabitListUpdated, null));
-    });
+  public async getHabits() : Promise<Habit[]> {
+    return this.getObjects<Habit>('habits');
   }
 
-  public async getHabits() {
-    if (!this.storageInstantiated) {
-      await this.init();
-    }
-
-    return this.storage.get('habits');
-  }
-
-  public deleteHabit(habit: Habit) {
-    this.getHabits().then((result) => {
-      if (!result) {
-        this.eventQueueService.dispatch(new AppEvent(AppEventType.HabitListUpdated, null));
-        return;
-      }
-
-      var index = result.indexOf(habit);
-      result.splice(index, 1);
-
-      if (result.length > 0) {
-        this.saveHabits(result);
-      }
-      else {
-        this.storage.remove('habits');
-        this.eventQueueService.dispatch(new AppEvent(AppEventType.HabitListUpdated, null));
-      }
-    });
+  public deleteHabit(habit: Habit) : void {
+    this.deleteObject(habit, 'habits', 'HabitSID', new AppEvent(AppEventType.HabitListUpdated, null));
   }
 
   public getNewHabit() : Habit {
@@ -91,6 +42,18 @@ export class HabitRepoService {
     return habit;
   }
 
+  public saveHabitStreak(habitStreak: HabitStreak) {
+    this.saveObject(habitStreak, `habit_streaks_${habitStreak.HabitSID}`, 'HabitSID', new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
+  }
+
+  public async getHabitStreaksByHabit(habitSID: string) : Promise<HabitStreak[]> {
+    return this.getObjects<HabitStreak>(`habit_streaks_${habitSID}`);
+  }
+
+  public deleteHabitStreak(habitStreak: HabitStreak) {
+    this.deleteObject(habitStreak, `habit_streaks_${habitStreak.HabitSID}`, 'HabitSID', new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
+  }
+
   public getNewHabitStreak(habit: Habit) : HabitStreak {
     var habitStreak = new HabitStreak();
     habitStreak.HabitSID = habit.HabitSID;
@@ -98,64 +61,64 @@ export class HabitRepoService {
     return habitStreak;
   }
 
-  public saveHabitStreak(habitStreak: HabitStreak) {
-    this.getHabitStreaksByHabit(habitStreak.HabitSID).then((result : HabitStreak[]) => {
+  private saveObject<T>(object: T, storageKey: string, objectKey: string, emitEvent: AppEvent<string | null>) {
+    this.getObjects<T>(storageKey).then((result : T[]) => {
       if (!result) {
         result = [];
       }
 
-      var existingHabitStreak = result.find(x => x.HabitStreakSID === habitStreak.HabitStreakSID);
+      var existingObjectInList = result.find(x => Object.getOwnPropertyDescriptor(x, objectKey) === Object.getOwnPropertyDescriptor(object, objectKey));
 
-      if (existingHabitStreak) {
-        var index = result.indexOf(existingHabitStreak);
-        result[index] = habitStreak;
+      if (existingObjectInList) {
+        var index = result.indexOf(existingObjectInList);
+        result[index] = object;
       }
       else {
-        result.push(habitStreak);
+        result.push(object);
       }
       
-      this.saveHabitStreaks(result);
+      this.saveObjects<T>(result, storageKey, emitEvent);
     });
   }
 
-  public async saveHabitStreaks(habitStreaks: HabitStreak[]) {
+  private async saveObjects<T>(objects: T[], storageKey: string, emitEvent: AppEvent<string | null>) {
     if (!this.storageInstantiated) {
       await this.init();
     }
 
-    if (habitStreaks.length == 0) {
+    if (objects.length == 0) {
       return;
     }
 
-    this.storage.set(`habit_streaks_${habitStreaks[0].HabitSID}`, habitStreaks).then(() => {
-      this.eventQueueService.dispatch(new AppEvent(AppEventType.HabitStreakListUpdated, habitStreaks[0].HabitSID));
+    this.storage.set(storageKey, objects).then(() => {
+      this.eventQueueService.dispatch(emitEvent);
     });
   }
 
-  public async getHabitStreaksByHabit(habitSID: string) : Promise<HabitStreak[]> {
+  private async getObjects<T>(storageKey: string) : Promise<T[]> {
     if (!this.storageInstantiated) {
       await this.init();
     }
 
-    return this.storage.get(`habit_streaks_${habitSID}`);
+    return this.storage.get(storageKey);
   }
 
-  public deleteHabitStreak(habitStreak: HabitStreak) {
-    this.getHabitStreaksByHabit(habitStreak.HabitSID).then((result) => {
+  private deleteObject<T>(object: T, storageKey: string, objectKey: string, emitEvent: AppEvent<string | null>) {
+    this.getObjects<T>(storageKey).then((result : T[]) => {
       if (!result) {
-        this.eventQueueService.dispatch(new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
+        this.eventQueueService.dispatch(emitEvent);
         return;
       }
 
-      var index = result.indexOf(habitStreak);
+      var index = result.indexOf(object);
       result.splice(index, 1);
 
       if (result.length > 0) {
-        this.saveHabitStreaks(result);
+        this.saveObjects(result, storageKey, emitEvent);
       }
       else {
-        this.storage.remove(`habit_streaks_${habitStreak.HabitSID}`);
-        this.eventQueueService.dispatch(new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
+        this.storage.remove(storageKey);
+        this.eventQueueService.dispatch(emitEvent);
       }
     });
   }
