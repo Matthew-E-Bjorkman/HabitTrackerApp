@@ -4,5 +4,5 @@ export const routes: Routes = [
   {
     path: '',
     loadChildren: () => import('./tab-controller/tabs.routes').then((m) => m.routes),
-  },
+  }
 ];

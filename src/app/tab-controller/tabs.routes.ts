@@ -12,9 +12,14 @@ export const routes: Routes = [
           import('../tabs/home-tab/home.page').then((m) => m.HomePage),
       },
       {
-        path: 'camera',
+        path: 'calendar',
         loadComponent: () =>
-          import('../tabs/camera-tab/camera.page').then((m) => m.CameraPage),
+          import('../tabs/calendar-tab/calendar.page').then((m) => m.CalendarPage),
+      },
+      {
+        path: 'more',
+        loadComponent: () =>
+          import('../tabs/more-tab/more.page').then((m) => m.MorePage),
       },
       {
         path: '',

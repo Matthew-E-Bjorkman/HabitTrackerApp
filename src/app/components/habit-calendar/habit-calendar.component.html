@@ -1,0 +1,14 @@
+<ion-card>
+  <ion-card-header>
+    <ion-card-title>
+      <ion-select label="Habit History:" interface="popover" placeholder="Habit" [(ngModel)]="selectedHabit" (ionChange)="highlightDatesForHabit($event)">
+        <ion-select-option *ngFor="let habit of habits" [value]="habit.HabitSID">
+          {{habit.Name}}
+        </ion-select-option>
+      </ion-select>
+    </ion-card-title>
+  </ion-card-header>
+  <ion-card-content>
+    <ion-datetime class="datetime" presentation="date" [highlightedDates]="highlightedDates"></ion-datetime>
+  </ion-card-content>
+</ion-card>
