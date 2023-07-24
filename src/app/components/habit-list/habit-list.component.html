@@ -4,10 +4,16 @@
   </ion-card-header>
   <ion-card-content>
     <ion-list *ngFor="let habit of habits" class="ion-list">
-      <ion-item class="ion-item" *ngIf="!habit.IsArchived">
+      <ion-item class="ion-item" *ngIf="!habit.IsArchived" no-lines>
+        <ion-checkbox justify="start" class="habit-checkbox" (ionChange)="habitChecked($event, habit)" [checked]="habitStreaks[habit.HabitSID]"></ion-checkbox>
         <ion-icon name="{{habit.Icon}}"></ion-icon>
-        <ion-label>{{habit.Name}}</ion-label>
-        <ion-checkbox justify="end" (ionChange)="habitChecked($event, habit)" [checked]="habitStreaks[habit.HabitSID]"></ion-checkbox>
+        <ion-label>
+          {{habit.Name}}
+        </ion-label>
+        <ion-button disabled="true">
+          <ion-icon name="flame" color="fire" class="streak-icon"></ion-icon>
+          {{habitStreaks[habit.HabitSID]?.StreakCount ?? 0}}
+        </ion-button>
       </ion-item>
     </ion-list>
   </ion-card-content>

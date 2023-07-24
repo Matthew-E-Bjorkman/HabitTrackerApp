@@ -31,8 +31,8 @@ export class HabitLogicService {
     return new Date(todayFull.getFullYear(), todayFull.getMonth(), todayFull.getDate());
   }
 
-  private getActiveStreakByHabit(habitStreaks: HabitStreak[]) : HabitStreak | undefined {
-    if (!habitStreaks) {
+  public getActiveStreakByHabit(habitStreaks: HabitStreak[]) : HabitStreak | undefined {
+    if (!habitStreaks || habitStreaks.length == 0) {
       return undefined;
     }
 
@@ -49,7 +49,7 @@ export class HabitLogicService {
     return activeStreak;
   }
 
-  private isDateToday(date: Date) {
+  public isDateToday(date: Date) {
     return this.isSameDate(date, this.getTodayDate());
   }
 

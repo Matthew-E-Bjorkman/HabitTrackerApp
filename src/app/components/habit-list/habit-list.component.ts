@@ -16,7 +16,7 @@ import { HabitLogicService } from 'src/app/services/habit-logic/habit-logic.serv
 })
 export class HabitListComponent implements OnInit {
   habits!: Habit[];
-  habitStreaks: {[habitSid: string]: HabitStreak[]} = {};
+  habitStreaks: {[habitSid: string]: HabitStreak | undefined} = {};
 
   constructor(public habitRepoService: HabitRepoService, public habitLogicService: HabitLogicService, private eventQueueService: EventQueueService) { }
 
@@ -35,7 +35,13 @@ export class HabitListComponent implements OnInit {
   public getHabitStreaks() {
     for (let habit of this.habits) {
       this.habitRepoService.getHabitStreaksByHabit(habit.HabitSID).then((result) => {
-        this.habitStreaks[habit.HabitSID] = result;
+        var activeStreak = this.habitLogicService.getActiveStreakByHabit(result);
+        if (activeStreak && this.habitLogicService.isDateToday(activeStreak.EndDate)) {
+          this.habitStreaks[habit.HabitSID] = activeStreak;
+        }
+        else {
+          this.habitStreaks[habit.HabitSID] = undefined;
+        }
       });
     }
   }

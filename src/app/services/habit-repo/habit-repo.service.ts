@@ -67,7 +67,7 @@ export class HabitRepoService {
         result = [];
       }
 
-      var existingObjectInList = result.find(x => Object.getOwnPropertyDescriptor(x, objectKey) === Object.getOwnPropertyDescriptor(object, objectKey));
+      var existingObjectInList = result.find(x => Object.getOwnPropertyDescriptor(x, objectKey)?.value === Object.getOwnPropertyDescriptor(object, objectKey)?.value);
 
       if (existingObjectInList) {
         var index = result.indexOf(existingObjectInList);
