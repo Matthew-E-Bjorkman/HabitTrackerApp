@@ -12,10 +12,23 @@
 
 <ion-content color="primary" class="ion-padding">
   <ion-list id="modal-list" [inset]="true">
-    <ion-item *ngFor="let sysIcon of filteredIcons">
-      <ion-button (click)="selected(sysIcon)"> 
-        <ion-icon name="{{sysIcon.name}}"></ion-icon>
-      </ion-button>
-    </ion-item>
+    <div *ngFor="let sysIcon of filteredIcons; let i = index">
+      <ion-item *ngIf="i % 4 == 0">
+        <div class="row">
+          <ion-button (click)="selected(sysIcon)" class="row-button"> 
+            <ion-icon name="{{sysIcon.name}}"></ion-icon>
+          </ion-button>
+          <ion-button *ngIf="i + 1 < filteredIcons.length" (click)="selected(filteredIcons[i+1])" class="row-button"> 
+            <ion-icon name="{{filteredIcons[i+1].name}}"></ion-icon>
+          </ion-button>
+          <ion-button *ngIf="i + 2 < filteredIcons.length" (click)="selected(filteredIcons[i+2])" class="row-button"> 
+            <ion-icon name="{{filteredIcons[i+2].name}}"></ion-icon>
+          </ion-button>
+          <ion-button *ngIf="i + 3 < filteredIcons.length" (click)="selected(filteredIcons[i+3])" class="row-button"> 
+            <ion-icon name="{{filteredIcons[i+3].name}}"></ion-icon>
+          </ion-button>
+        </div>
+      </ion-item>
+    </div>
   </ion-list>
 </ion-content>
