@@ -37,9 +37,15 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
-  <!-- <ion-item *ngIf="habitDaily | async">
-    Nothing, only Daily is valid
-  </ion-item> -->
+  <ion-item *ngIf="habitDailyOrNone | async">
+    <ion-label position="stacked">Habit Schedule Days:</ion-label>
+    <ion-select placeholder="N/A" disabled="disabled" [(ngModel)]="habit.FrequencyCategoryValues" [multiple]="true">
+      <ion-select-option *ngFor="let habitWeeklyFrequencyKey of habitWeeklyFrequencyKeys" 
+      [value]="habitWeeklyFrequencyKey">
+        {{habitWeeklyFrequencies[habitWeeklyFrequencyKey]}}
+      </ion-select-option>
+    </ion-select>
+  </ion-item>
   <ion-item *ngIf="habitWeekly | async">
     <ion-label position="stacked">Habit Schedule Days:</ion-label>
     <ion-select placeholder="Monday,Wednesday" [(ngModel)]="habit.FrequencyCategoryValues" [multiple]="true">

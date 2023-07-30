@@ -34,7 +34,7 @@ export class HabitAddEditModalComponent  implements OnInit {
   public habitMonthlyFrequencyKeys = Object.values(HabitMonthlyFrequency).filter(x => typeof x === 'number') as number[];
   public habitMonthlyFrequencies = HabitMonthlyFrequency;
 
-  public habitDaily!: Observable<boolean>;
+  public habitDailyOrNone!: Observable<boolean>;
   public habitWeekly!: Observable<boolean>;
   public habitMonthly!: Observable<boolean>;
 
@@ -43,6 +43,7 @@ export class HabitAddEditModalComponent  implements OnInit {
   ngOnInit(): void {
     if (!this.habit) {
       this.habit = this.habitRepoService.getNewHabit();
+      this.habitDailyOrNone = new Observable(obs => obs.next(true));
     }
     else {
       this.origHabit = {... this.habit};
@@ -54,22 +55,23 @@ export class HabitAddEditModalComponent  implements OnInit {
   public habitFrequencyChanged(newFrequency: HabitFrequencyCategory) {
     this.habit.FrequencyCategoryValues = [];
     switch (newFrequency) {
-      case HabitFrequencyCategory.Daily: {
-        this.habitDaily = new Observable(obs => obs.next(true));
-        this.habitWeekly = new Observable(obs => obs.next(false));
-        this.habitMonthly = new Observable(obs => obs.next(false));
-        break;
-      }
       case HabitFrequencyCategory.Weekly: {
-        this.habitDaily = new Observable(obs => obs.next(false));
+        this.habitDailyOrNone = new Observable(obs => obs.next(false));
         this.habitWeekly = new Observable(obs => obs.next(true));
         this.habitMonthly = new Observable(obs => obs.next(false));
         break;
       }
       case HabitFrequencyCategory.Monthly: {
-        this.habitDaily = new Observable(obs => obs.next(false));
+        this.habitDailyOrNone = new Observable(obs => obs.next(false));
         this.habitWeekly = new Observable(obs => obs.next(false));
         this.habitMonthly = new Observable(obs => obs.next(true));
+        break;
+      }
+      case HabitFrequencyCategory.Daily: 
+      default: {
+        this.habitDailyOrNone = new Observable(obs => obs.next(true));
+        this.habitWeekly = new Observable(obs => obs.next(false));
+        this.habitMonthly = new Observable(obs => obs.next(false));
         break;
       }
     }

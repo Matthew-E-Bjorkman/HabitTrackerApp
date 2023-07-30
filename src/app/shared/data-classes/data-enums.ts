@@ -1,7 +1,7 @@
 /* Habits */
 export enum HabitType {
     "Health",
-    "Hygeine",
+    "Hygiene",
     "Wellness",
     "Study"
 }
