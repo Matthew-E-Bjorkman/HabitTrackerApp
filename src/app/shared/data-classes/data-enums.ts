@@ -1,9 +1,18 @@
 /* Habits */
 export enum HabitType {
+    "Chores",
+    "Food",
     "Health",
+    "Hobbies",
     "Hygiene",
-    "Wellness",
-    "Study"
+    "Mindfulness",
+    "Negative Habits",
+    "Productivity",
+    "Romance",
+    "School",
+    "Sleep",
+    "Social",
+    "Work"
 }
 
 export enum HabitFrequencyCategory {
