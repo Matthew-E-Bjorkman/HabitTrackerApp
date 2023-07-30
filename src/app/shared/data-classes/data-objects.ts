@@ -18,7 +18,6 @@ export class HabitStreak {
     "StartDate": Date;
     "EndDate": Date;
     "StreakCount": number;
-    "IsActive": boolean;
 }
 
 /* Habit_Reminder */

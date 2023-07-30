@@ -23,6 +23,7 @@ export class HabitListComponent implements OnInit {
   ngOnInit(): void {
     this.getHabits();
     this.eventQueueService.on(AppEventType.HabitListUpdated).subscribe(() => this.getHabits());
+    this.eventQueueService.on(AppEventType.HabitStreakListUpdated).subscribe(() => this.getHabitStreaks());
   }
 
   public getHabits() {
@@ -64,7 +65,6 @@ export class HabitListComponent implements OnInit {
 
   public saveNewHabitStreak(habit: Habit, date: Date) {
     var newStreak = this.habitRepoService.getNewHabitStreak(habit);
-    newStreak.IsActive = true;
     newStreak.StartDate = date;
     newStreak.EndDate = date;
     newStreak.StreakCount = 1;

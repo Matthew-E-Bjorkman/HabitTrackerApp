@@ -36,15 +36,9 @@ export class HabitLogicService {
       return undefined;
     }
 
-    var activeStreak = habitStreaks.find(streak => streak.IsActive);
-
-    if (!activeStreak) {
-      //Check if a streak is not properly marked as active
-      var today = this.getTodayDate();
-      var yesterday = this.getYesterdayDate();
-
-      activeStreak = habitStreaks.find(streak => this.isSameDate(streak.EndDate, today) || this.isSameDate(streak.EndDate, yesterday));
-    }
+    var today = this.getTodayDate();
+    var yesterday = this.getYesterdayDate();
+    var activeStreak = habitStreaks.find(streak => this.isSameDate(streak.EndDate, today) || this.isSameDate(streak.EndDate, yesterday));
 
     return activeStreak;
   }

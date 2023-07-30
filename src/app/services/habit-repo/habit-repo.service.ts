@@ -43,7 +43,7 @@ export class HabitRepoService {
   }
 
   public saveHabitStreak(habitStreak: HabitStreak) {
-    this.saveObject(habitStreak, `habit_streaks_${habitStreak.HabitSID}`, 'HabitSID', new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
+    this.saveObject(habitStreak, `habit_streaks_${habitStreak.HabitSID}`, 'HabitStreakSID', new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
   }
 
   public async getHabitStreaksByHabit(habitSID: string) : Promise<HabitStreak[]> {
@@ -51,7 +51,7 @@ export class HabitRepoService {
   }
 
   public deleteHabitStreak(habitStreak: HabitStreak) {
-    this.deleteObject(habitStreak, `habit_streaks_${habitStreak.HabitSID}`, 'HabitSID', new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
+    this.deleteObject(habitStreak, `habit_streaks_${habitStreak.HabitSID}`, 'HabitStreakSID', new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
   }
 
   public getNewHabitStreak(habit: Habit) : HabitStreak {
