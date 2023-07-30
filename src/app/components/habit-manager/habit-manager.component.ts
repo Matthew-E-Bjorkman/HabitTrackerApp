@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ModalController } from '@ionic/angular';
+import { IonicModule, ModalController, PopoverController } from '@ionic/angular';
 import { EventQueueService } from 'src/app/services/event-queue/event-queue.service';
 import { HabitRepoService } from 'src/app/services/habit-repo/habit-repo.service';
 import { Habit } from 'src/app/shared/data-classes/data-objects';
 import { AppEventType } from 'src/app/shared/events';
 import { FormsModule } from '@angular/forms';
 import { HabitAddEditModalComponent } from '../habit-add-edit-modal/habit-add-edit-modal.component';
+import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
 
 @Component({
   selector: 'app-habit-manager',
@@ -19,7 +20,7 @@ export class HabitManagerComponent implements OnInit {
   modal!: HTMLIonModalElement;
   habits!: Habit[];
 
-  constructor(private habitRepoService: HabitRepoService, private eventQueueService: EventQueueService, private modalController: ModalController) { }
+  constructor(private habitRepoService: HabitRepoService, private eventQueueService: EventQueueService, private modalController: ModalController, private popoverController: PopoverController) { }
 
   ngOnInit(): void {
     this.getHabits();
@@ -36,8 +37,22 @@ export class HabitManagerComponent implements OnInit {
     this.habitRepoService.saveHabit(habit);
   }
 
-  public deleteHabit(habit: Habit) {
-    this.habitRepoService.deleteHabit(habit);
+  public async deleteHabit(habit: Habit) {
+    const popover = await this.popoverController.create({
+      component: DeleteConfirmationModalComponent,
+      componentProps: {
+        objectName: habit.Name,
+        object: habit
+      }
+    });
+
+    popover.onDidDismiss().then((event) => {
+      if (event && event.data) {
+        this.habitRepoService.deleteHabit(habit);
+      }
+    });
+
+    return await popover.present();
   }
 
   public async addEditHabit(habit: Habit | null) {
@@ -45,8 +60,9 @@ export class HabitManagerComponent implements OnInit {
       component: HabitAddEditModalComponent,
       componentProps: {
         habit: habit
-      }
-    })
+      },
+      showBackdrop: false
+    });
 
     modal.onDidDismiss().then((event) => {
       if (event && event.data) {

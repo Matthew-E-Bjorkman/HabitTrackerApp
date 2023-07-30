@@ -6,7 +6,7 @@
     <ion-list *ngFor="let habit of habits" class="ion-list">
       <ion-item class="ion-item" *ngIf="!habit.IsArchived">
         <ion-icon name="{{habit.Icon}}"></ion-icon>
-        <ion-label>{{habit.Name}}</ion-label>
+        <ion-label text-wrap>{{habit.Name}}</ion-label>
         <ion-button (click)="addEditHabit(habit)">
           <ion-icon slot="icon-only" name="pencil"></ion-icon>
         </ion-button>

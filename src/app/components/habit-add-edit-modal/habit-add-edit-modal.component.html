@@ -14,12 +14,14 @@
     <ion-label position="stacked">Habit Name:</ion-label>
     <ion-input type="text" placeholder="Brush Teeth" [(ngModel)]="habit.Name" legacy="true"></ion-input>
   </ion-item>
+
   <ion-item>
     <ion-label position="stacked">Habit Icon:</ion-label>
     <ion-input type="button" (click)="changeIcon()" legacy="true">
       <ion-icon name="{{habit.Icon}}"></ion-icon>
     </ion-input>
   </ion-item>
+
   <ion-item>
     <ion-label position="stacked">Habit Type:</ion-label>
     <ion-select placeholder="Health" [(ngModel)]="habit.Type">
@@ -28,6 +30,7 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
+
   <ion-item>
     <ion-label position="stacked">Habit Schedule:</ion-label>
     <ion-select placeholder="Daily" [(ngModel)]="habit.FrequencyCategory" (ngModelChange)="habitFrequencyChanged(habit.FrequencyCategory)">
@@ -37,6 +40,7 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
+
   <ion-item *ngIf="habitDailyOrNone | async">
     <ion-label position="stacked">Habit Schedule Days:</ion-label>
     <ion-select placeholder="N/A" disabled="disabled" [(ngModel)]="habit.FrequencyCategoryValues" [multiple]="true">
@@ -64,4 +68,10 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
+  
+  <div *ngIf="validationFailed | async" >
+    <ion-item *ngFor="let error of validationErrors" color="fire">
+      <ion-label text-wrap>{{error.Message}}</ion-label>
+    </ion-item>
+  </div>
 </ion-content>

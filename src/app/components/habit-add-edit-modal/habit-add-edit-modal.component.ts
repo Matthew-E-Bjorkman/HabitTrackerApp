@@ -7,6 +7,7 @@ import { HabitFrequencyCategory, HabitType, HabitWeeklyFrequency, HabitMonthlyFr
 import { IconSelectModalComponent } from '../icon-select-modal/icon-select-modal.component';
 import { HabitRepoService } from 'src/app/services/habit-repo/habit-repo.service';
 import { Observable } from 'rxjs';
+import { ValidationError } from 'src/app/shared/system-classes/system-objects';
 
 
 @Component({
@@ -37,6 +38,9 @@ export class HabitAddEditModalComponent  implements OnInit {
   public habitDailyOrNone!: Observable<boolean>;
   public habitWeekly!: Observable<boolean>;
   public habitMonthly!: Observable<boolean>;
+
+  public validationErrors!: ValidationError[];
+  public validationFailed!: Observable<boolean>;
 
   constructor(private habitRepoService: HabitRepoService, private modalController: ModalController) { }
 
@@ -83,7 +87,70 @@ export class HabitAddEditModalComponent  implements OnInit {
   }
 
   public confirm() {
+    if (!this.validateHabit())
+      return;
+
     this.modal.dismiss(this.habit);
+  }
+
+  public validateHabit() : boolean {
+    this.validationErrors = [];
+    this.validationFailed = new Observable(obs => obs.next(false));
+
+    if (!this.habit) {
+      var validationError = new ValidationError();
+      validationError.Name = 'UninstantiatedHabitSave';
+      validationError.Field = 'Habit';
+      validationError.Message = 'Cannot save an uninstantiated Habit.'
+      this.validationErrors.push(validationError);
+    }
+    else {
+      if (!this.habit.Name) {
+        var validationError = new ValidationError();
+        validationError.Name = 'HabitNameMissing';
+        validationError.Field = 'Name';
+        validationError.Message = 'Habit Name is required.'
+        this.validationErrors.push(validationError);
+      }
+      if (this.habit.Name.length > 40) {
+        var validationError = new ValidationError();
+        validationError.Name = 'HabitNameMaxLength';
+        validationError.Field = 'Name';
+        validationError.Message = 'Habit Name cannot be longer than 40 characters.'
+        this.validationErrors.push(validationError);
+      }
+  
+      if (this.habit.Type == undefined) {
+        var validationError = new ValidationError();
+        validationError.Name = 'HabitTypeMissing';
+        validationError.Field = 'Type';
+        validationError.Message = 'Habit Type is required.'
+        this.validationErrors.push(validationError);
+      }
+  
+      if (this.habit.FrequencyCategory  == undefined) {
+        var validationError = new ValidationError();
+        validationError.Name = 'HabitFrequencyCategoryMissing';
+        validationError.Field = 'FrequencyCategory';
+        validationError.Message = 'Habit Schedule is required.'
+        this.validationErrors.push(validationError);
+      }
+      else if ((this.habit.FrequencyCategory == HabitFrequencyCategory.Weekly || this.habit.FrequencyCategory == HabitFrequencyCategory.Monthly)
+        && (!this.habit.FrequencyCategoryValues || this.habit.FrequencyCategoryValues.length == 0)) {
+        var validationError = new ValidationError();
+        validationError.Name = 'HabitFrequencyCategoryValuesMissing';
+        validationError.Field = 'FrequencyCategoryValues';
+        validationError.Message = 'Habit Schedule Days is required when "Weekly" or "Monthly" is selected.'
+        this.validationErrors.push(validationError);
+      }
+    }
+    
+    if (this.validationErrors.length > 0) {
+      this.validationFailed = new Observable(obs => obs.next(true));
+      return false;
+    }
+
+    return true;
   }
 
   public async changeIcon() {

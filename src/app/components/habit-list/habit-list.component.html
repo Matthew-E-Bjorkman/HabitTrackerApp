@@ -7,7 +7,7 @@
       <ion-item class="ion-item" *ngIf="!habit.IsArchived" no-lines>
         <ion-checkbox justify="start" class="habit-checkbox" (ionChange)="habitChecked($event, habit)" [checked]="habitStreaks[habit.HabitSID]"></ion-checkbox>
         <ion-icon name="{{habit.Icon}}"></ion-icon>
-        <ion-label>
+        <ion-label text-wrap>
           {{habit.Name}}
         </ion-label>
         <ion-button disabled="true">

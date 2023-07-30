@@ -32,7 +32,14 @@ export class HabitRepoService {
   }
 
   public deleteHabit(habit: Habit) : void {
-    this.deleteObject(habit, 'habits', 'HabitSID', new AppEvent(AppEventType.HabitListUpdated, null));
+    this.getHabitStreaksByHabit(habit.HabitSID).then((result) => {
+      if (result) {
+        this.storage.remove(`habit_streaks_${habit.HabitSID}`);
+        this.eventQueueService.dispatch(new AppEvent(AppEventType.HabitStreakListUpdated, habit.HabitSID));
+      }
+
+      this.deleteObject(habit, 'habits', 'HabitSID', new AppEvent(AppEventType.HabitListUpdated, null));
+    }); 
   }
 
   public getNewHabit() : Habit {
