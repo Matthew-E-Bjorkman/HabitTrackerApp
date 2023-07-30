@@ -112,7 +112,7 @@ export class HabitAddEditModalComponent  implements OnInit {
         validationError.Message = 'Habit Name is required.'
         this.validationErrors.push(validationError);
       }
-      if (this.habit.Name.length > 40) {
+      else if (this.habit.Name.length > 40) {
         var validationError = new ValidationError();
         validationError.Name = 'HabitNameMaxLength';
         validationError.Field = 'Name';
