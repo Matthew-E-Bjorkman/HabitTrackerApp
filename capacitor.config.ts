@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'ionic.app.base',
-  appName: 'ionic-app-base',
+  appId: 'com.chainedhabits',
+  appName: 'Chained',
   webDir: 'www',
   server: {
     androidScheme: 'https'
