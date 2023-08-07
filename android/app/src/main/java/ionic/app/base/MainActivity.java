@@ -1,4 +1,4 @@
-package ionic.app.base;
+package com.chainedhabits;
 
 import com.getcapacitor.BridgeActivity;
 
