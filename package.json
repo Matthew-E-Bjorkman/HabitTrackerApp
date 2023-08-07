@@ -1,5 +1,5 @@
 {
-  "name": "ionic-app-base",
+  "name": "chained",
   "version": "0.0.0",
   "author": "Ionic Framework",
   "homepage": "https://ionicframework.com/",
@@ -11,7 +11,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "ionic:build": "npm run build",
-    "ionic:serve": "npm run start"
+    "ionic:serve": "npm run start",
+    "resources": "capacitor-resources -p android,ios"
   },
   "private": true,
   "dependencies": {
