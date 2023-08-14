@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
-import { Habit, HabitStreak } from 'src/app/shared/data-classes/data-objects';
+import { Habit, HabitReminder, HabitStreak } from 'src/app/shared/data-classes/data-objects';
 import { EventQueueService } from '../event-queue/event-queue.service';
 import { AppEvent, AppEventType } from 'src/app/shared/events';
 import { v4 as uuid } from 'uuid';
+import { HabitFrequencyCategory, HabitType } from 'src/app/shared/data-classes/data-enums';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ export class HabitRepoService {
     this.storageInstantiated = true;
   }
 
+  //Habit
   public refreshHabitLists() {
     this.eventQueueService.dispatch(new AppEvent(AppEventType.HabitListUpdated, null));
   }
@@ -46,9 +48,12 @@ export class HabitRepoService {
     var habit = new Habit();
     habit.HabitSID = uuid();
     habit.Icon = 'checkmark-circle-outline';
+    habit.FrequencyCategory = HabitFrequencyCategory.Daily;
+    habit.Type = HabitType.Chores;
     return habit;
   }
 
+  //HabitStreak
   public saveHabitStreak(habitStreak: HabitStreak) {
     this.saveObject(habitStreak, `habit_streaks_${habitStreak.HabitSID}`, 'HabitStreakSID', new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
   }
@@ -68,6 +73,34 @@ export class HabitRepoService {
     return habitStreak;
   }
 
+  //HabitReminder
+  public saveHabitReminder(habitReminder: HabitReminder) {
+    this.saveObject(habitReminder, `habit_reminders_${habitReminder.HabitSID}`, 'HabitReminderSID', new AppEvent(AppEventType.HabitReminderListUpdated, habitReminder.HabitSID));
+  }
+
+  public saveHabitReminders(habitReminders: HabitReminder[]) {
+    if (!habitReminders || habitReminders.length == 0) {
+      return;
+    }
+    this.saveObjects(habitReminders, `habit_reminders_${habitReminders[0].HabitSID}`, new AppEvent(AppEventType.HabitReminderListUpdated, habitReminders[0].HabitSID));
+  }
+
+  public async getHabitRemindersByHabit(habitSID: string) : Promise<HabitReminder[]> {
+    return this.getObjects<HabitReminder>(`habit_reminders_${habitSID}`);
+  }
+
+  public deleteHabitReminder(habitReminder: HabitReminder) {
+    this.deleteObject(habitReminder, `habit_reminders_${habitReminder.HabitSID}`, 'HabitReminderSID', new AppEvent(AppEventType.HabitReminderListUpdated, habitReminder.HabitSID));
+  }
+
+  public getNewHabitReminder(habit: Habit) : HabitReminder {
+    var habitReminder = new HabitReminder();
+    habitReminder.HabitSID = habit.HabitSID;
+    habitReminder.HabitReminderSID = uuid();
+    return habitReminder;
+  }
+
+  //Generic
   private saveObject<T>(object: T, storageKey: string, objectKey: string, emitEvent: AppEvent<string | null>) {
     this.getObjects<T>(storageKey).then((result : T[]) => {
       if (!result) {

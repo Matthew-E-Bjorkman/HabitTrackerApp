@@ -24,5 +24,6 @@ export class HabitStreak {
 export class HabitReminder {
     "HabitReminderSID": string;
     "HabitSID": string;
-    "ReminderTime": Date;
+    "ReminderTime": string;
+    "ReminderDaysBefore": number;
 }

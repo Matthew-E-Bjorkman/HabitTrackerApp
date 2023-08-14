@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, ModalController } from '@ionic/angular';
-import { Habit } from 'src/app/shared/data-classes/data-objects';
+import { Habit, HabitReminder } from 'src/app/shared/data-classes/data-objects';
 import { HabitFrequencyCategory, HabitType, HabitWeeklyFrequency, HabitMonthlyFrequency } from 'src/app/shared/data-classes/data-enums';
 import { IconSelectModalComponent } from '../icon-select-modal/icon-select-modal.component';
 import { HabitRepoService } from 'src/app/services/habit-repo/habit-repo.service';
@@ -39,6 +39,10 @@ export class HabitAddEditModalComponent  implements OnInit {
   public habitWeekly!: Observable<boolean>;
   public habitMonthly!: Observable<boolean>;
 
+  public habitReminders!: HabitReminder[];
+  public habitReminderDays: number = 0;
+  public habitReminderTime: string = '1900-01-01T00:00:00.000Z';
+
   public validationErrors!: ValidationError[];
   public validationFailed!: Observable<boolean>;
 
@@ -48,12 +52,25 @@ export class HabitAddEditModalComponent  implements OnInit {
     if (!this.habit) {
       this.habit = this.habitRepoService.getNewHabit();
       this.habitDailyOrNone = new Observable(obs => obs.next(true));
+      this.habitReminders = [];
     }
     else {
       this.origHabit = {... this.habit};
       this.habitFrequencyChanged(this.habit.FrequencyCategory);
       this.habit = this.origHabit;
+      this.getHabitReminders();
     }
+  }
+
+  public getHabitReminders() {
+    this.habitRepoService.getHabitRemindersByHabit(this.habit.HabitSID).then((reminders) => {
+      if (reminders) {
+        this.habitReminders = reminders;
+      }
+      else {
+        this.habitReminders = [];
+      }
+    });
   }
 
   public habitFrequencyChanged(newFrequency: HabitFrequencyCategory) {
@@ -80,6 +97,18 @@ export class HabitAddEditModalComponent  implements OnInit {
       }
     }
   }
+  
+  public resetReminder() {
+    this.habitReminderDays = 0;
+    this.habitReminderTime = '1900-01-01T00:00:00.000Z'
+  }
+
+  public saveReminder() {
+    var reminder = this.habitRepoService.getNewHabitReminder(this.habit); 
+    reminder.ReminderDaysBefore = this.habitReminderDays;
+    reminder.ReminderTime = this.habitReminderTime.endsWith('Z') ? this.habitReminderTime : this.habitReminderTime + 'Z';
+    this.habitReminders.push(reminder);
+  }
 
   public cancel() {
     this.habitRepoService.refreshHabitLists();      
@@ -89,6 +118,8 @@ export class HabitAddEditModalComponent  implements OnInit {
   public confirm() {
     if (!this.validateHabit())
       return;
+
+    this.habitRepoService.saveHabitReminders(this.habitReminders);
 
     this.modal.dismiss(this.habit);
   }
