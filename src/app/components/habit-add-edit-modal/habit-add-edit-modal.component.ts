@@ -39,9 +39,7 @@ export class HabitAddEditModalComponent  implements OnInit {
   public habitWeekly!: Observable<boolean>;
   public habitMonthly!: Observable<boolean>;
 
-  public habitReminders!: HabitReminder[];
-  public habitReminderDays: number = 0;
-  public habitReminderTime: string = '1900-01-01T00:00:00.000Z';
+  public currentReminder!: HabitReminder;
 
   public validationErrors!: ValidationError[];
   public validationFailed!: Observable<boolean>;
@@ -52,25 +50,16 @@ export class HabitAddEditModalComponent  implements OnInit {
     if (!this.habit) {
       this.habit = this.habitRepoService.getNewHabit();
       this.habitDailyOrNone = new Observable(obs => obs.next(true));
-      this.habitReminders = [];
     }
     else {
       this.origHabit = {... this.habit};
       this.habitFrequencyChanged(this.habit.FrequencyCategory);
       this.habit = this.origHabit;
-      this.getHabitReminders();
     }
-  }
 
-  public getHabitReminders() {
-    this.habitRepoService.getHabitRemindersByHabit(this.habit.HabitSID).then((reminders) => {
-      if (reminders) {
-        this.habitReminders = reminders;
-      }
-      else {
-        this.habitReminders = [];
-      }
-    });
+    this.currentReminder = new HabitReminder();
+    this.currentReminder.ReminderDaysBefore = 0;
+    this.currentReminder.ReminderTime = '1900-01-01T00:00:00.000Z';
   }
 
   public habitFrequencyChanged(newFrequency: HabitFrequencyCategory) {
@@ -99,15 +88,22 @@ export class HabitAddEditModalComponent  implements OnInit {
   }
   
   public resetReminder() {
-    this.habitReminderDays = 0;
-    this.habitReminderTime = '1900-01-01T00:00:00.000Z'
+    this.currentReminder = new HabitReminder();
+    
+    this.currentReminder.ReminderDaysBefore = 0;
+    this.currentReminder.ReminderTime = '1900-01-01T00:00:00.000Z';
+  }
+
+  public editReminder(reminder: HabitReminder) {
+    this.currentReminder = reminder;
   }
 
   public saveReminder() {
-    var reminder = this.habitRepoService.getNewHabitReminder(this.habit); 
-    reminder.ReminderDaysBefore = this.habitReminderDays;
-    reminder.ReminderTime = this.habitReminderTime.endsWith('Z') ? this.habitReminderTime : this.habitReminderTime + 'Z';
-    this.habitReminders.push(reminder);
+    this.currentReminder.ReminderTime = this.currentReminder.ReminderTime.endsWith('Z') ? this.currentReminder.ReminderTime : this.currentReminder.ReminderTime + 'Z';
+    
+    if (this.habit.Reminders.indexOf(this.currentReminder) < 0) {
+      this.habit.Reminders.push(this.currentReminder);
+    }
   }
 
   public cancel() {
@@ -118,8 +114,6 @@ export class HabitAddEditModalComponent  implements OnInit {
   public confirm() {
     if (!this.validateHabit())
       return;
-
-    this.habitRepoService.saveHabitReminders(this.habitReminders);
 
     this.modal.dismiss(this.habit);
   }

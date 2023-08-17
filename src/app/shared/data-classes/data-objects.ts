@@ -9,6 +9,7 @@ export class Habit {
     "FrequencyCategory": DataEnums.HabitFrequencyCategory;
     "FrequencyCategoryValues": number[];
     "IsArchived": boolean;
+    "Reminders": HabitReminder[];
 }
 
 /* Habit_Streak */

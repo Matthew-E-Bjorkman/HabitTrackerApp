@@ -91,10 +91,11 @@
     </ion-select>
   </ion-item>
   
-  <ion-item *ngFor="let reminder of habitReminders" class="ion-item">
+  <ion-item *ngFor="let reminder of habit.Reminders" class="ion-item">
     <ion-icon name="notifications"></ion-icon>
     <ion-label>{{reminder.ReminderDaysBefore}} Days Before at {{reminder.ReminderTime | date:'shortTime':'UTC'}}</ion-label>
-    <ion-button class="ion-button" (click)="habitReminders.splice(habitReminders.indexOf(reminder),1)"><ion-icon name="trash"></ion-icon></ion-button>
+    <ion-button class="ion-button" (click)="editReminder(reminder);reminderModal.present();"><ion-icon name="pencil"></ion-icon></ion-button>
+    <ion-button class="ion-button" (click)="habit.Reminders.splice(habit.Reminders.indexOf(reminder),1)"><ion-icon name="trash"></ion-icon></ion-button>
   </ion-item>
 
   <ion-item>
@@ -103,11 +104,11 @@
       <ng-template>
         <ion-list>
           <ion-item>
-            <ion-input type="number" placeholder="0" label="Days Before to Remind:" [(ngModel)]="habitReminderDays"></ion-input>
+            <ion-input type="number" placeholder="0" label="Days Before to Remind:" [(ngModel)]="currentReminder.ReminderDaysBefore"></ion-input>
           </ion-item>
           <ion-item>
             <ion-input>
-              <ion-datetime presentation="time" [(ngModel)]="habitReminderTime"></ion-datetime>
+              <ion-datetime presentation="time" [(ngModel)]="currentReminder.ReminderTime"></ion-datetime>
             </ion-input>
           </ion-item>
           <ion-item>

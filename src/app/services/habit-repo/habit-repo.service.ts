@@ -50,6 +50,7 @@ export class HabitRepoService {
     habit.Icon = 'checkmark-circle-outline';
     habit.FrequencyCategory = HabitFrequencyCategory.Daily;
     habit.Type = HabitType.Chores;
+    habit.Reminders = [];
     return habit;
   }
 
@@ -74,25 +75,6 @@ export class HabitRepoService {
   }
 
   //HabitReminder
-  public saveHabitReminder(habitReminder: HabitReminder) {
-    this.saveObject(habitReminder, `habit_reminders_${habitReminder.HabitSID}`, 'HabitReminderSID', new AppEvent(AppEventType.HabitReminderListUpdated, habitReminder.HabitSID));
-  }
-
-  public saveHabitReminders(habitReminders: HabitReminder[]) {
-    if (!habitReminders || habitReminders.length == 0) {
-      return;
-    }
-    this.saveObjects(habitReminders, `habit_reminders_${habitReminders[0].HabitSID}`, new AppEvent(AppEventType.HabitReminderListUpdated, habitReminders[0].HabitSID));
-  }
-
-  public async getHabitRemindersByHabit(habitSID: string) : Promise<HabitReminder[]> {
-    return this.getObjects<HabitReminder>(`habit_reminders_${habitSID}`);
-  }
-
-  public deleteHabitReminder(habitReminder: HabitReminder) {
-    this.deleteObject(habitReminder, `habit_reminders_${habitReminder.HabitSID}`, 'HabitReminderSID', new AppEvent(AppEventType.HabitReminderListUpdated, habitReminder.HabitSID));
-  }
-
   public getNewHabitReminder(habit: Habit) : HabitReminder {
     var habitReminder = new HabitReminder();
     habitReminder.HabitSID = habit.HabitSID;
