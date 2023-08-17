@@ -6,8 +6,8 @@
     height: 60%;
 }
 
-ion-button:disabled,
-ion-button[disabled] {
+ion-item > ion-button:disabled,
+ion-item > ion-button[disabled] {
     opacity: 1;
 }
 

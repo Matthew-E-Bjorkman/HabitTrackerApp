@@ -3,8 +3,8 @@
     <ion-card-title class="vertical-align-content">
       <ion-label>Habits:</ion-label>
       <ion-label id="dateLabel"></ion-label>
-      <ion-button class="header-button" (click)="changeDate(false)"><ion-icon name="chevron-back"></ion-icon></ion-button>
-      <ion-button class="header-button" (click)="changeDate(true)"><ion-icon name="chevron-forward"></ion-icon></ion-button>
+      <ion-button id="yesterdayButton" class="header-button" (click)="changeDate(false)"><ion-icon name="chevron-back"></ion-icon></ion-button>
+      <ion-button id="tomorrowButton" class="header-button" (click)="changeDate(true)"><ion-icon name="chevron-forward"></ion-icon></ion-button>
     </ion-card-title>
   </ion-card-header>
   <ion-card-content>

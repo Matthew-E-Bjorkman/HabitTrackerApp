@@ -24,7 +24,7 @@ export class HabitListComponent implements OnInit {
 
   ngOnInit(): void {
     this.dateToView = this.habitLogicService.getTodayDate();
-    this.setDateLabel();
+    this.setDateUI();
     this.getHabits();
     this.eventQueueService.on(AppEventType.HabitListUpdated).subscribe(() => this.getHabits());
     this.eventQueueService.on(AppEventType.HabitStreakListUpdated).subscribe(() => this.getHabitStreaks());
@@ -43,7 +43,7 @@ export class HabitListComponent implements OnInit {
     for (let habit of this.habits) {
       this.habitRepoService.getHabitStreaksByHabit(habit.HabitSID).then((result) => {
         var activeStreak = this.habitLogicService.getActiveStreakByHabit(result);
-        if (activeStreak && this.habitLogicService.isDateToday(activeStreak.EndDate)) {
+        if (activeStreak && this.habitLogicService.isSameDate(this.dateToView, activeStreak.EndDate)) {
           this.habitStreaks[habit.HabitSID] = activeStreak;
         }
         else {
@@ -53,20 +53,22 @@ export class HabitListComponent implements OnInit {
     }
   }
 
-  public setDateLabel() {
+  public setDateUI() {
     document.getElementById("dateLabel")!.innerText = this.dateToView.toLocaleDateString('en-us', {month:"short", weekday:"short", day:"2-digit"});
+    (document.getElementById("tomorrowButton") as any).disabled = this.habitLogicService.isDateToday(this.dateToView);
   }
 
   public changeDate(nextDate: boolean) {
     var dateChange = nextDate ? 1 : -1;
     this.dateToView.setDate(this.dateToView.getDate() + dateChange);
-    this.setDateLabel();
+    this.setDateUI();
     this.getHabits();
+    this.getHabitStreaks();
   }
 
   public habitChecked(event: any, habit: Habit) {
     this.habitRepoService.getHabitStreaksByHabit(habit.HabitSID).then((result) => {
-      var markedStreak = this.habitLogicService.markStreakForToday(result, event.detail.checked);
+      var markedStreak = this.habitLogicService.markStreakForDate(result, this.dateToView, event.detail.checked);
 
       if (markedStreak && markedStreak.StreakCount > 0) {
         this.habitRepoService.saveHabitStreak(markedStreak);
@@ -75,7 +77,7 @@ export class HabitListComponent implements OnInit {
         this.habitRepoService.deleteHabitStreak(markedStreak);
       }
       else {
-        this.saveNewHabitStreak(habit, this.habitLogicService.getTodayDate());
+        this.saveNewHabitStreak(habit, this.dateToView);
       }
     });
   }

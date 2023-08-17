@@ -28,18 +28,22 @@ export class HabitLogicService {
     return habitsToInclude;
   }
 
-  public markStreakForToday(habitStreaks: HabitStreak[], markAsCompleted: boolean) : HabitStreak | undefined {
+  public markStreakForDate(habitStreaks: HabitStreak[], dateToCheck: Date, markAsCompleted: boolean) : HabitStreak | undefined {
     var activeStreak = this.getActiveStreakByHabit(habitStreaks);
 
+    var dateBefore = new Date(dateToCheck);
+    dateBefore.setDate(dateToCheck.getDate() - 1);
+
+
     //The streak exists, today hasn't been marked, and we're marking today
-    if (activeStreak && markAsCompleted && this.isDateYesterday(activeStreak.EndDate)){
-      activeStreak.EndDate = this.getTodayDate();
+    if (activeStreak && markAsCompleted && this.isSameDate(activeStreak.EndDate, dateBefore)){
+      activeStreak.EndDate = dateToCheck;
       activeStreak.StreakCount++;
     }
     //The streak exists, today has been marked, and we're unmarking today
-    else if (activeStreak && !markAsCompleted && this.isDateToday(activeStreak.EndDate))
+    else if (activeStreak && !markAsCompleted && this.isSameDate(activeStreak.EndDate, dateToCheck))
     {
-      activeStreak.EndDate = this.getYesterdayDate();
+      activeStreak.EndDate = dateBefore;
       activeStreak.StreakCount--;
     }
 
@@ -67,16 +71,12 @@ export class HabitLogicService {
     return this.isSameDate(date, this.getTodayDate());
   }
 
-  private isDateYesterday(date: Date) {
-    return this.isSameDate(date, this.getYesterdayDate());
-  }
-
   private getYesterdayDate() : Date {
     var todayFull = new Date();
     return new Date(todayFull.getFullYear(), todayFull.getMonth(), todayFull.getDate() - 1);
   }
 
-  private isSameDate(date1: Date, date2: Date) : boolean {
+  public isSameDate(date1: Date, date2: Date) : boolean {
     return date1.getDate() === date2.getDate() &&
     date1.getMonth() === date2.getMonth() &&
     date1.getFullYear() === date2.getFullYear();
