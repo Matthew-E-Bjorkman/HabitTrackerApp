@@ -1,12 +1,32 @@
 import { Injectable } from '@angular/core';
-import { HabitStreak } from 'src/app/shared/data-classes/data-objects';
+import { HabitFrequencyCategory } from 'src/app/shared/data-classes/data-enums';
+import { Habit, HabitStreak } from 'src/app/shared/data-classes/data-objects';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HabitLogicService {
-
   constructor() { }
+
+  public habitsForDate(habits: Habit[], dateToView: Date): Habit[] {
+    var habitsToInclude : Habit[] = [];
+    for (let habit of habits) {
+      switch (habit.FrequencyCategory) {
+        case HabitFrequencyCategory.Daily:
+          habitsToInclude.push(habit);
+          break;
+        case HabitFrequencyCategory.Weekly:
+          if (habit.FrequencyCategoryValues.includes(dateToView.getDay() - 1)) //Offset 1 for indexing
+            habitsToInclude.push(habit);
+          break;
+        case HabitFrequencyCategory.Monthly:
+          if (habit.FrequencyCategoryValues.includes(dateToView.getDate() - 1)) //Offset 1 for indexing
+            habitsToInclude.push(habit);
+          break;
+      }
+    }
+    return habitsToInclude;
+  }
 
   public markStreakForToday(habitStreaks: HabitStreak[], markAsCompleted: boolean) : HabitStreak | undefined {
     var activeStreak = this.getActiveStreakByHabit(habitStreaks);

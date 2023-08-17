@@ -10,3 +10,20 @@ ion-button:disabled,
 ion-button[disabled] {
     opacity: 1;
 }
+
+.vertical-align-content
+{
+     display: flex!important;
+     align-content: center!important;
+     align-items: center!important;
+}
+
+.header-button {
+    height: fit-content;
+    margin-left: 5px;
+    width: 15%;
+}
+
+ion-card-title > ion-label {
+    margin-right: 12px;
+}

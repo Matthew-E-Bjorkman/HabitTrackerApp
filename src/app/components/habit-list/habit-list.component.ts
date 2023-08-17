@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonLabel, IonicModule } from '@ionic/angular';
 import { HabitRepoService } from 'src/app/services/habit-repo/habit-repo.service';
 import { CommonModule } from '@angular/common';
 import { Habit, HabitStreak } from 'src/app/shared/data-classes/data-objects';
 import { EventQueueService } from 'src/app/services/event-queue/event-queue.service';
 import { AppEventType } from 'src/app/shared/events';
 import { HabitLogicService } from 'src/app/services/habit-logic/habit-logic.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-habit-list',
@@ -15,12 +16,15 @@ import { HabitLogicService } from 'src/app/services/habit-logic/habit-logic.serv
   imports: [IonicModule, CommonModule]
 })
 export class HabitListComponent implements OnInit {
+  dateToView!: Date;
   habits!: Habit[];
   habitStreaks: {[habitSid: string]: HabitStreak | undefined} = {};
 
   constructor(public habitRepoService: HabitRepoService, public habitLogicService: HabitLogicService, private eventQueueService: EventQueueService) { }
 
   ngOnInit(): void {
+    this.dateToView = this.habitLogicService.getTodayDate();
+    this.setDateLabel();
     this.getHabits();
     this.eventQueueService.on(AppEventType.HabitListUpdated).subscribe(() => this.getHabits());
     this.eventQueueService.on(AppEventType.HabitStreakListUpdated).subscribe(() => this.getHabitStreaks());
@@ -28,8 +32,10 @@ export class HabitListComponent implements OnInit {
 
   public getHabits() {
     this.habitRepoService.getHabits().then((result) => {
-      this.habits = result ?? [];
-      this.getHabitStreaks();
+      if (result) {
+        this.habits = this.habitLogicService.habitsForDate(result, this.dateToView)
+        this.getHabitStreaks();
+      }
     });
   }
 
@@ -45,6 +51,17 @@ export class HabitListComponent implements OnInit {
         }
       });
     }
+  }
+
+  public setDateLabel() {
+    document.getElementById("dateLabel")!.innerText = this.dateToView.toLocaleDateString('en-us', {month:"short", weekday:"short", day:"2-digit"});
+  }
+
+  public changeDate(nextDate: boolean) {
+    var dateChange = nextDate ? 1 : -1;
+    this.dateToView.setDate(this.dateToView.getDate() + dateChange);
+    this.setDateLabel();
+    this.getHabits();
   }
 
   public habitChecked(event: any, habit: Habit) {
