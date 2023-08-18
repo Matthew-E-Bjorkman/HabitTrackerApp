@@ -42,8 +42,8 @@ export class HabitListComponent implements OnInit {
   public getHabitStreaks() {
     for (let habit of this.habits) {
       this.habitRepoService.getHabitStreaksByHabit(habit.HabitSID).then((result) => {
-        var activeStreak = this.habitLogicService.getActiveStreakByHabit(result);
-        if (activeStreak && this.habitLogicService.isSameDate(this.dateToView, activeStreak.EndDate)) {
+        var activeStreak = this.habitLogicService.getActiveStreakByHabit(result, this.dateToView);
+        if (activeStreak) {
           this.habitStreaks[habit.HabitSID] = activeStreak;
         }
         else {
@@ -68,16 +68,13 @@ export class HabitListComponent implements OnInit {
 
   public habitChecked(event: any, habit: Habit) {
     this.habitRepoService.getHabitStreaksByHabit(habit.HabitSID).then((result) => {
-      var markedStreak = this.habitLogicService.markStreakForDate(result, this.dateToView, event.detail.checked);
+      var markedStreaks = this.habitLogicService.markStreakForDate(result, this.dateToView, event.detail.checked);
 
-      if (markedStreak && markedStreak.StreakCount > 0) {
-        this.habitRepoService.saveHabitStreak(markedStreak);
-      }
-      else if (markedStreak) {
-        this.habitRepoService.deleteHabitStreak(markedStreak);
+      if (markedStreaks.length == 0) {
+        this.saveNewHabitStreak(habit, this.dateToView);
       }
       else {
-        this.saveNewHabitStreak(habit, this.dateToView);
+        this.habitRepoService.saveHabitStreaks(result);
       }
     });
   }

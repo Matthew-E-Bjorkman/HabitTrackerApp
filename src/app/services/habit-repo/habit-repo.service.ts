@@ -59,6 +59,10 @@ export class HabitRepoService {
     this.saveObject(habitStreak, `habit_streaks_${habitStreak.HabitSID}`, 'HabitStreakSID', new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
   }
 
+  public saveHabitStreaks(habitStreaks: HabitStreak[]) {
+    this.saveObjects(habitStreaks, `habit_streaks_${habitStreaks[0].HabitSID}`, new AppEvent(AppEventType.HabitStreakListUpdated, habitStreaks[0].HabitSID));
+  }
+
   public async getHabitStreaksByHabit(habitSID: string) : Promise<HabitStreak[]> {
     return this.getObjects<HabitStreak>(`habit_streaks_${habitSID}`);
   }
@@ -112,9 +116,9 @@ export class HabitRepoService {
       return;
     }
 
-    this.storage.set(storageKey, objects).then(() => {
+    this.storage.set(storageKey, objects).then((result) => {
       this.eventQueueService.dispatch(emitEvent);
-    });
+    }).catch((error) => console.error(error));
   }
 
   private async getObjects<T>(storageKey: string) : Promise<T[]> {
@@ -122,7 +126,7 @@ export class HabitRepoService {
       await this.init();
     }
 
-    return this.storage.get(storageKey);
+    return this.storage.get(storageKey).catch((error) => console.error(error));
   }
 
   private deleteObject<T>(object: T, storageKey: string, objectKey: string, emitEvent: AppEvent<string | null>) {
@@ -132,14 +136,18 @@ export class HabitRepoService {
         return;
       }
 
-      var index = result.indexOf(object);
-      result.splice(index, 1);
+      var existingObjectInList = result.find(x => Object.getOwnPropertyDescriptor(x, objectKey)?.value === Object.getOwnPropertyDescriptor(object, objectKey)?.value);
+
+      if (existingObjectInList) {
+        var index = result.indexOf(existingObjectInList);
+        result.splice(index, 1);
+      }
 
       if (result.length > 0) {
         this.saveObjects(result, storageKey, emitEvent);
       }
       else {
-        this.storage.remove(storageKey);
+        this.storage.remove(storageKey).catch((error) => console.error(error));
         this.eventQueueService.dispatch(emitEvent);
       }
     });

@@ -15,8 +15,15 @@
         <ion-label text-wrap>
           {{habit.Name}}
         </ion-label>
+        <!-- THE BELOW VERSION CURRENTLY IS BUGGED IN IONIC. WAITING FOR A FIX -->
+        <!-- <ion-checkbox justify="start" labelPlacement="end" class="habit-checkbox" (ionChange)="habitChecked($event, habit)" [checked]="habitStreaks[habit.HabitSID]">
+          <ion-label text-wrap class="vertical-align-content">
+            <ion-icon name="{{habit.Icon}}" class="checkbox-icon"></ion-icon>
+            {{habit.Name}}
+          </ion-label>
+        </ion-checkbox> -->
         <ion-button disabled="true">
-          <ion-icon name="flame" color="fire" class="streak-icon"></ion-icon>
+          <ion-icon name="flame" color="fire"></ion-icon>
           {{habitStreaks[habit.HabitSID]?.StreakCount ?? 0}}
         </ion-button>
       </ion-item>

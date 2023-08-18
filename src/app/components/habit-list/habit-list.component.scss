@@ -2,10 +2,6 @@
     margin-right: 8px;
 }
 
-.streak-icon {
-    height: 60%;
-}
-
 ion-item > ion-button:disabled,
 ion-item > ion-button[disabled] {
     opacity: 1;
@@ -26,4 +22,10 @@ ion-item > ion-button[disabled] {
 
 ion-card-title > ion-label {
     margin-right: 12px;
+}
+
+.checkbox-icon {
+    width: 23px;
+    height: 23px;
+    margin-right: 5px;
 }
