@@ -68,22 +68,11 @@ export class HabitListComponent implements OnInit {
 
   public habitChecked(event: any, habit: Habit) {
     this.habitRepoService.getHabitStreaksByHabit(habit.HabitSID).then((result) => {
-      var markedStreaks = this.habitLogicService.markStreakForDate(result, this.dateToView, event.detail.checked);
+      if (!result) result = [];
+      var markedStreaks = this.habitLogicService.markStreakForDate(result, this.dateToView, event.detail.checked, this.habitRepoService.getNewHabitStreak(habit, this.dateToView));
 
-      if (markedStreaks.length == 0) {
-        this.saveNewHabitStreak(habit, this.dateToView);
-      }
-      else {
-        this.habitRepoService.saveHabitStreaks(result);
-      }
+      this.habitRepoService.saveHabitStreaks(markedStreaks);
     });
   }
 
-  public saveNewHabitStreak(habit: Habit, date: Date) {
-    var newStreak = this.habitRepoService.getNewHabitStreak(habit);
-    newStreak.StartDate = date;
-    newStreak.EndDate = date;
-    newStreak.StreakCount = 1;
-    this.habitRepoService.saveHabitStreak(newStreak);
-  }
 }

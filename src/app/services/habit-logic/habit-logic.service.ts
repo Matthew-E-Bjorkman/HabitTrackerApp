@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HabitFrequencyCategory } from 'src/app/shared/data-classes/data-enums';
 import { Habit, HabitStreak } from 'src/app/shared/data-classes/data-objects';
-import { v4 as uuid } from 'uuid';
 
 @Injectable({
   providedIn: 'root'
@@ -29,7 +28,7 @@ export class HabitLogicService {
     return habitsToInclude;
   }
 
-  public markStreakForDate(habitStreaks: HabitStreak[], dateToCheck: Date, markAsCompleted: boolean) : HabitStreak[] {
+  public markStreakForDate(habitStreaks: HabitStreak[], dateToCheck: Date, markAsCompleted: boolean, newHabitStreak: HabitStreak) : HabitStreak[] {
     //The habit was checked
     if (markAsCompleted) {
       var existingStreakBefore : HabitStreak | undefined = this.getStreakBeforeDate(habitStreaks, dateToCheck);
@@ -39,13 +38,15 @@ export class HabitLogicService {
         existingStreakBefore.EndDate = existingStreakAfter.EndDate;
         existingStreakBefore.StreakCount = existingStreakBefore.StreakCount + existingStreakAfter.StreakCount + 1;
 
-        habitStreaks.splice(habitStreaks.indexOf(existingStreakAfter));
+        habitStreaks.splice(habitStreaks.indexOf(existingStreakAfter), 1);
       } else if (existingStreakBefore) { //Extend the streak forwards
         existingStreakBefore.EndDate = dateToCheck;
         existingStreakBefore.StreakCount++;
       } else if (existingStreakAfter) { //Extend the streak backwards
         existingStreakAfter.StartDate = dateToCheck;
         existingStreakAfter.StreakCount++;
+      } else {
+        habitStreaks.push(newHabitStreak);
       }
     }
     else {
@@ -61,20 +62,17 @@ export class HabitLogicService {
       else {
         var originalStreak : number = streak.StreakCount;
 
-        var streakAfter : HabitStreak = new HabitStreak();
-        streakAfter.HabitSID = streak.HabitSID;
-        streakAfter.HabitStreakSID = uuid();
-        streakAfter.EndDate = new Date(streak.EndDate);
-        streakAfter.StartDate = new Date(streak.StartDate);
-        streakAfter.StartDate.setDate(dateToCheck.getDate() + 1);
+        newHabitStreak.EndDate = new Date(streak.EndDate);
+        newHabitStreak.StartDate = new Date(streak.StartDate);
+        newHabitStreak.StartDate.setDate(dateToCheck.getDate() + 1);
 
         streak.EndDate.setDate(dateToCheck.getDate() - 1);
         streak.StartDate;
         streak.StreakCount = Math.abs(this.daysBetween(streak.StartDate, streak.EndDate) + 1);
         
-        streakAfter.StreakCount = originalStreak - streak.StreakCount - 1;
+        newHabitStreak.StreakCount = originalStreak - streak.StreakCount - 1;
 
-        habitStreaks.push(streakAfter);
+        habitStreaks.push(newHabitStreak);
       }
     }
 

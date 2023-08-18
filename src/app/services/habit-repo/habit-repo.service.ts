@@ -71,10 +71,13 @@ export class HabitRepoService {
     this.deleteObject(habitStreak, `habit_streaks_${habitStreak.HabitSID}`, 'HabitStreakSID', new AppEvent(AppEventType.HabitStreakListUpdated, habitStreak.HabitSID));
   }
 
-  public getNewHabitStreak(habit: Habit) : HabitStreak {
+  public getNewHabitStreak(habit: Habit, startingDate : Date) : HabitStreak {
     var habitStreak = new HabitStreak();
     habitStreak.HabitSID = habit.HabitSID;
     habitStreak.HabitStreakSID = uuid();
+    habitStreak.StreakCount = 1;
+    habitStreak.StartDate = startingDate;
+    habitStreak.EndDate = startingDate;
     return habitStreak;
   }
 
