@@ -27,4 +27,5 @@ export class HabitReminder {
     "HabitSID": string;
     "ReminderTime": string;
     "ReminderDaysBefore": number;
+    "NotificationSID": number;
 }

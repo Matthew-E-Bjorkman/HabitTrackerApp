@@ -8,6 +8,7 @@ import { AppEventType } from 'src/app/shared/events';
 import { FormsModule } from '@angular/forms';
 import { HabitAddEditModalComponent } from '../habit-add-edit-modal/habit-add-edit-modal.component';
 import { DeleteConfirmationModalComponent } from '../delete-confirmation-modal/delete-confirmation-modal.component';
+import { HabitLogicService } from 'src/app/services/habit-logic/habit-logic.service';
 
 @Component({
   selector: 'app-habit-manager',
@@ -20,7 +21,7 @@ export class HabitManagerComponent implements OnInit {
   modal!: HTMLIonModalElement;
   habits!: Habit[];
 
-  constructor(private habitRepoService: HabitRepoService, private eventQueueService: EventQueueService, private modalController: ModalController, private popoverController: PopoverController) { }
+  constructor(private habitRepoService: HabitRepoService, private habitLogicService: HabitLogicService, private eventQueueService: EventQueueService, private modalController: ModalController, private popoverController: PopoverController) { }
 
   ngOnInit(): void {
     this.getHabits();
@@ -30,6 +31,7 @@ export class HabitManagerComponent implements OnInit {
   private getHabits() {
     this.habitRepoService.getHabits().then((result) => {
       this.habits = result ?? [];
+      this.habitLogicService.checkAndScheduleReminders(this.habits);
     });
   }
 
@@ -48,6 +50,9 @@ export class HabitManagerComponent implements OnInit {
 
     popover.onDidDismiss().then((event) => {
       if (event && event.data) {
+        for (let reminder of habit.Reminders) {
+          this.habitLogicService.cancelReminder(reminder);
+        }
         this.habitRepoService.deleteHabit(habit);
       }
     });

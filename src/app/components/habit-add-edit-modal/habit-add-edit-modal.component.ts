@@ -8,6 +8,7 @@ import { IconSelectModalComponent } from '../icon-select-modal/icon-select-modal
 import { HabitRepoService } from 'src/app/services/habit-repo/habit-repo.service';
 import { Observable } from 'rxjs';
 import { ValidationError } from 'src/app/shared/system-classes/system-objects';
+import { HabitLogicService } from 'src/app/services/habit-logic/habit-logic.service';
 
 
 @Component({
@@ -44,7 +45,7 @@ export class HabitAddEditModalComponent  implements OnInit {
   public validationErrors!: ValidationError[];
   public validationFailed!: Observable<boolean>;
 
-  constructor(private habitRepoService: HabitRepoService, private modalController: ModalController) { }
+  constructor(private habitRepoService: HabitRepoService, private habitLogicService: HabitLogicService, private modalController: ModalController) { }
 
   ngOnInit(): void {
     if (!this.habit) {
@@ -57,9 +58,7 @@ export class HabitAddEditModalComponent  implements OnInit {
       this.habit = this.origHabit;
     }
 
-    this.currentReminder = new HabitReminder();
-    this.currentReminder.ReminderDaysBefore = 0;
-    this.currentReminder.ReminderTime = '1900-01-01T00:00:00.000Z';
+    this.currentReminder = this.habitRepoService.getNewHabitReminder(this.habit);
   }
 
   public habitFrequencyChanged(newFrequency: HabitFrequencyCategory) {
@@ -88,14 +87,15 @@ export class HabitAddEditModalComponent  implements OnInit {
   }
   
   public resetReminder() {
-    this.currentReminder = new HabitReminder();
-    
-    this.currentReminder.ReminderDaysBefore = 0;
-    this.currentReminder.ReminderTime = '1900-01-01T00:00:00.000Z';
+    this.currentReminder = this.habitRepoService.getNewHabitReminder(this.habit);
   }
 
   public editReminder(reminder: HabitReminder) {
     this.currentReminder = reminder;
+  }
+
+  public cancelReminder(reminder: HabitReminder) {
+    this.habitLogicService.cancelReminder(reminder);
   }
 
   public saveReminder() {

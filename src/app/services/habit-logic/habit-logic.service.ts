@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { LocalNotifications, Schedule } from '@capacitor/local-notifications';
 import { HabitFrequencyCategory } from 'src/app/shared/data-classes/data-enums';
-import { Habit, HabitStreak } from 'src/app/shared/data-classes/data-objects';
+import { Habit, HabitReminder, HabitStreak } from 'src/app/shared/data-classes/data-objects';
 
 @Injectable({
   providedIn: 'root'
@@ -125,14 +126,63 @@ export class HabitLogicService {
     return this.isSameDate(date, this.getTodayDate());
   }
 
-  private getYesterdayDate() : Date {
-    var todayFull = new Date();
-    return new Date(todayFull.getFullYear(), todayFull.getMonth(), todayFull.getDate() - 1);
-  }
-
   public isSameDate(date1: Date, date2: Date) : boolean {
     return date1.getDate() === date2.getDate() &&
     date1.getMonth() === date2.getMonth() &&
     date1.getFullYear() === date2.getFullYear();
+  }
+
+  public checkAndScheduleReminders(habits: Habit[]) {
+    LocalNotifications.getPending().then((result) => {
+      for (let habit of habits) {
+        for (let reminder of habit.Reminders) {
+          if (!result || !result.notifications.find((notification) => {
+            return notification.id === reminder.NotificationSID
+          })) 
+          {
+            this.scheduleReminder(reminder, habit);
+          }
+        }
+      }
+    });
+  }
+
+  public scheduleReminder(reminder: HabitReminder, habit: Habit) {
+    var scheduleBody! : Schedule;
+    const now = new Date();
+    const notificationDate = new Date(reminder.ReminderTime.substring(0, reminder.ReminderTime.length-1));
+    notificationDate.setFullYear(now.getFullYear(), now.getMonth(), now.getDate());
+
+    if (notificationDate <= now) {
+      notificationDate.setDate(notificationDate.getDate() + 1);
+    }
+
+    if (habit.FrequencyCategory == HabitFrequencyCategory.Daily) {
+      scheduleBody = {
+        at: notificationDate,
+        every: 'day',
+        allowWhileIdle: true
+      }
+    }
+    else {
+      return; //TODO
+    }
+
+    LocalNotifications.schedule({
+      notifications: [{
+        id: reminder.NotificationSID,
+        body: `Time to complete habit: ${habit.Name}`,
+        title: habit.Name,
+        schedule: scheduleBody
+      }]
+    });
+  }
+
+  public cancelReminder(reminder: HabitReminder) {
+    LocalNotifications.cancel({
+      notifications:[
+        {id:reminder.NotificationSID}
+      ]
+    });
   }
 }

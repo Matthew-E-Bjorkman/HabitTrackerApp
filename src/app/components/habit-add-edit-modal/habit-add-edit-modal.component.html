@@ -95,7 +95,7 @@
     <ion-icon name="notifications"></ion-icon>
     <ion-label>{{reminder.ReminderDaysBefore}} Days Before at {{reminder.ReminderTime | date:'shortTime':'UTC'}}</ion-label>
     <ion-button class="ion-button" (click)="editReminder(reminder);reminderModal.present();"><ion-icon name="pencil"></ion-icon></ion-button>
-    <ion-button class="ion-button" (click)="habit.Reminders.splice(habit.Reminders.indexOf(reminder),1)"><ion-icon name="trash"></ion-icon></ion-button>
+    <ion-button class="ion-button" (click)="cancelReminder(reminder);habit.Reminders.splice(habit.Reminders.indexOf(reminder),1)"><ion-icon name="trash"></ion-icon></ion-button>
   </ion-item>
 
   <ion-item>
