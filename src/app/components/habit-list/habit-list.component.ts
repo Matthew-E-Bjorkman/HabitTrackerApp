@@ -70,7 +70,7 @@ export class HabitListComponent implements OnInit {
   public habitChecked(event: any, habit: Habit) {
     this.habitRepoService.getHabitStreaksByHabit(habit.HabitSID).then((result) => {
       if (!result) result = [];
-      var markedStreaks = this.habitLogicService.markStreakForDate(result, this.dateToView, event.detail.checked, this.habitRepoService.getNewHabitStreak(habit, this.dateToView));
+      var markedStreaks = this.habitLogicService.markStreakForDate(habit, result, this.dateToView, event.detail.checked, this.habitRepoService.getNewHabitStreak(habit, this.dateToView));
 
       this.habitRepoService.saveHabitStreaks(markedStreaks);
     });
