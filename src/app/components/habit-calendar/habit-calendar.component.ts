@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 import { EventQueueService } from 'src/app/services/event-queue/event-queue.service';
+import { HabitLogicService } from 'src/app/services/habit-logic/habit-logic.service';
 import { HabitRepoService } from 'src/app/services/habit-repo/habit-repo.service';
 import { Habit, HabitStreak } from 'src/app/shared/data-classes/data-objects';
 import { AppEventType } from 'src/app/shared/events';
@@ -20,7 +21,7 @@ export class HabitCalendarComponent  implements OnInit {
   habitStreaks: {[habitSid: string]: HabitStreak[]} = {};
   highlightedDates: any = [];
 
-  constructor(private habitRepoService: HabitRepoService, private eventQueueService: EventQueueService) { }
+  constructor(private habitLogicService: HabitLogicService, private habitRepoService: HabitRepoService, private eventQueueService: EventQueueService) { }
 
   ngOnInit() {
     this.getHabits();
@@ -57,6 +58,7 @@ export class HabitCalendarComponent  implements OnInit {
     }
 
     var habitStreaks = this.habitStreaks[habitSID];
+    var habit = this.habits.find((habit) => habit.HabitSID == habitSID)!;
     for (let habitStreak of habitStreaks) {
       var dateToAdd = new Date(habitStreak.StartDate.getFullYear(), habitStreak.StartDate.getMonth(), habitStreak.StartDate.getDate());
       for (let i = 0; i < habitStreak.StreakCount; i++) {
@@ -65,7 +67,9 @@ export class HabitCalendarComponent  implements OnInit {
           textColor: '#09721b',
           backgroundColor:'#c8e5d0'
         });
-        dateToAdd.setDate(dateToAdd.getDate() + 1);
+        
+        var nextDate = this.habitLogicService.getNextHabitDate(habit, dateToAdd);
+        dateToAdd = new Date(nextDate.getFullYear(), nextDate.getMonth(), nextDate.getDate());
       }
     }
   }

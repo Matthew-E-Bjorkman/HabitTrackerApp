@@ -40,7 +40,7 @@ export class HabitLogicService {
     return habitsToInclude;
   }
 
-  private getPreviousHabitDate(habit: Habit, dateToCheck: Date) : Date{
+  public getPreviousHabitDate(habit: Habit, dateToCheck: Date) : Date{
     var date = new Date(dateToCheck);
     do {
       date.setDate(date.getDate() - 1);
@@ -50,7 +50,7 @@ export class HabitLogicService {
     return date;
   }
 
-  private getNextHabitDate(habit: Habit, dateToCheck: Date) : Date{
+  public getNextHabitDate(habit: Habit, dateToCheck: Date) : Date{
     var date = new Date(dateToCheck);
     do {
       date.setDate(date.getDate() + 1);
@@ -98,15 +98,10 @@ export class HabitLogicService {
         newHabitStreak.StartDate = new Date(streak.StartDate);
 
         var date = this.getNextHabitDate(habit, dateToCheck);
-        newHabitStreak.StartDate.setFullYear(date.getFullYear());
-        newHabitStreak.StartDate.setMonth(date.getMonth());
-        newHabitStreak.StartDate.setDate(date.getDate());
+        newHabitStreak.StartDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
 
         date = this.getPreviousHabitDate(habit, dateToCheck);
-        streak.EndDate.setFullYear(date.getFullYear());
-        streak.EndDate.setMonth(date.getMonth());
-        streak.EndDate.setDate(date.getDate());
-        streak.StartDate;
+        streak.EndDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
         streak.StreakCount = Math.abs(this.daysBetween(streak.StartDate, streak.EndDate) + 1);
         
         newHabitStreak.StreakCount = originalStreak - streak.StreakCount - 1;
