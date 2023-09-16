@@ -7,7 +7,7 @@ export class Habit {
     "Icon": string;
     "Type": DataEnums.HabitType;
     "FrequencyCategory": DataEnums.HabitFrequencyCategory;
-    "FrequencyCategoryValues": number[];
+    "FrequencyCategoryValues": string[];
     "IsArchived": boolean;
     "Reminders": HabitReminder[];
 }

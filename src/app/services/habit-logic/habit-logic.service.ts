@@ -2,12 +2,20 @@ import { Injectable } from '@angular/core';
 import { LocalNotifications, Schedule } from '@capacitor/local-notifications';
 import { HabitFrequencyCategory } from 'src/app/shared/data-classes/data-enums';
 import { Habit, HabitReminder, HabitStreak } from 'src/app/shared/data-classes/data-objects';
+import { Platform } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HabitLogicService {
-  constructor() { }
+  constructor(private platform: Platform) { }
+
+  private dayOfWeekAsString(dayIndex: number) {
+    return ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex] || '';
+  }
+  private dayOfMonthAsString(dayIndex: number) {
+    return ["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"][dayIndex] || '';
+  }
 
   public habitsForDate(habits: Habit[], dateToView: Date): Habit[] {
     var habitsToInclude : Habit[] = [];
@@ -17,11 +25,13 @@ export class HabitLogicService {
           habitsToInclude.push(habit);
           break;
         case HabitFrequencyCategory.Weekly:
-          if (habit.FrequencyCategoryValues.includes(dateToView.getDay() - 1)) //Offset 1 for indexing
+          var weekday = this.dayOfWeekAsString(dateToView.getDay());
+          if (habit.FrequencyCategoryValues.includes(weekday)) 
             habitsToInclude.push(habit);
           break;
         case HabitFrequencyCategory.Monthly:
-          if (habit.FrequencyCategoryValues.includes(dateToView.getDate() - 1)) //Offset 1 for indexing
+          var monthDay = this.dayOfMonthAsString(dateToView.getDate() - 1);
+          if (habit.FrequencyCategoryValues.includes(monthDay))
             habitsToInclude.push(habit);
           break;
       }
@@ -147,7 +157,7 @@ export class HabitLogicService {
     });
   }
 
-  public scheduleReminder(reminder: HabitReminder, habit: Habit) {
+  public async scheduleReminder(reminder: HabitReminder, habit: Habit) {
     var scheduleBody! : Schedule;
     const now = new Date();
     const notificationDate = new Date(reminder.ReminderTime.substring(0, reminder.ReminderTime.length-1));
@@ -168,6 +178,27 @@ export class HabitLogicService {
       return; //TODO
     }
 
+    //Notifs are only for android
+    if (this.platform.is("android")) {
+      var permissions = await LocalNotifications.checkPermissions();
+      switch (permissions.display) {
+        case 'prompt':
+        case 'prompt-with-rationale':
+          var result = await LocalNotifications.requestPermissions();
+          if (result.display != 'granted'){
+            return;
+          }
+          break;
+        case 'denied':
+          return;
+        case 'granted':
+          break;
+      }
+    }
+    else {
+      return;
+    }
+
     LocalNotifications.schedule({
       notifications: [{
         id: reminder.NotificationSID,
@@ -184,5 +215,91 @@ export class HabitLogicService {
         {id:reminder.NotificationSID}
       ]
     });
+  }
+
+  public exportHabitsToCSV(habits: Habit[]) {
+    var headers = {
+      "HabitSID": "HabitSID",
+      "Icon": "Icon",
+      "FrequencyCategory": "FrequencyCategory",
+      "Type": "Type",
+      "Reminders": "Reminders",
+      "Name": "Name",
+      "FrequencyCategoryValues": "FrequencyCategoryValues",
+      "IsArchived": "IsArchived"
+    };
+
+    var csv = this.convertToCSV(headers, habits);
+
+    var exportedFilename = 'habits.csv';
+
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var link = document.createElement("a");
+    if (link.download !== undefined) { // feature detection
+        // Browsers that support HTML5 download attribute
+        var url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", exportedFilename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+  }
+
+  public exportHabitStreaksToCSV(habitStreaks: HabitStreak[]) {
+    var headers = {
+      "HabitSID": "HabitSID",
+      "HabitStreakSID": "HabitStreakSID",
+      "StreakCount": "StreakCount",
+      "StartDate": "StartDate",
+      "EndDate": "EndDate"
+    };
+    
+    var csv = this.convertToCSV(headers, habitStreaks);
+
+    var exportedFilename = 'habitStreaks.csv';
+
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var link = document.createElement("a");
+    if (link.download !== undefined) { // feature detection
+        // Browsers that support HTML5 download attribute
+        var url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", exportedFilename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+  }
+
+  private convertToCSV(headers: any, objArray: any[]) {
+    var str = '';
+
+    var line = '';
+    for (var headerIndex in headers) {
+      if (line != '') line += ','
+      var propVal = headers[headerIndex];
+      line += propVal;
+    }
+
+    str += line + '\r\n';
+
+    for (var i = 0; i < objArray.length; i++) {
+        if (!objArray[i]) continue;
+
+        line = '';
+        for (var index in objArray[i]) {
+            if (line != '') line += ','
+            var propVal = objArray[i][index];
+            var propValText = typeof propVal == 'object' ? JSON.stringify(propVal).replace(/,/g,';') : propVal;
+            line += propValText;
+        }
+
+        str += line + '\r\n';
+    }
+
+    return str;
   }
 }

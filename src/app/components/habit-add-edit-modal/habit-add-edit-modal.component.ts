@@ -24,16 +24,16 @@ export class HabitAddEditModalComponent  implements OnInit {
 
   private origHabit! : Habit;
 
-  public habitTypeKeys = Object.values(HabitType).filter(x => typeof x === 'number') as number[];
+  public habitTypeKeys = Object.values(HabitType);
   public habitTypes = HabitType;
 
-  public habitFrequencyCategoryKeys = Object.values(HabitFrequencyCategory).filter(x => typeof x === 'number') as number[];
+  public habitFrequencyCategoryKeys = Object.values(HabitFrequencyCategory);
   public habitFrequencyCategories = HabitFrequencyCategory;
 
-  public habitWeeklyFrequencyKeys = Object.values(HabitWeeklyFrequency).filter(x => typeof x === 'number') as number[];
+  public habitWeeklyFrequencyKeys = Object.values(HabitWeeklyFrequency);
   public habitWeeklyFrequencies = HabitWeeklyFrequency;
 
-  public habitMonthlyFrequencyKeys = Object.values(HabitMonthlyFrequency).filter(x => typeof x === 'number') as number[];
+  public habitMonthlyFrequencyKeys = Object.values(HabitMonthlyFrequency);
   public habitMonthlyFrequencies = HabitMonthlyFrequency;
 
   public habitDailyOrNone!: Observable<boolean>;
