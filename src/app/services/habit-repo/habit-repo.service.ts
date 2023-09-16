@@ -87,7 +87,6 @@ export class HabitRepoService {
     habitReminder.HabitSID = habit.HabitSID;
     habitReminder.HabitReminderSID = uuid();
     habitReminder.NotificationSID = this.getUniqueInt();
-    habitReminder.ReminderDaysBefore = 0;
     habitReminder.ReminderTime = '1900-01-01T00:00:00.000Z';
     return habitReminder;
   }

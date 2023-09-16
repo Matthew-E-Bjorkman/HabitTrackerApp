@@ -197,8 +197,21 @@ export class HabitLogicService {
         allowWhileIdle: true
       }
     }
+    else if (habit.FrequencyCategory == HabitFrequencyCategory.Weekly) {
+      return; //Need to adjust to multiple SIDs, schedule a notif per day of period
+      scheduleBody = {
+        at: notificationDate,
+        every: 'week',
+        allowWhileIdle: true
+      }
+    }
     else {
-      return; //TODO
+      return;
+      scheduleBody = {
+        at: notificationDate,
+        every: 'month',
+        allowWhileIdle: true
+      }
     }
 
     //Notifs are only for android
