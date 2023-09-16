@@ -40,6 +40,26 @@ export class HabitLogicService {
     return habitsToInclude;
   }
 
+  private getPreviousHabitDate(habit: Habit, dateToCheck: Date) : Date{
+    var date = new Date(dateToCheck);
+    do {
+      date.setDate(date.getDate() - 1);
+    }
+    while (this.habitsForDate([habit], date).length == 0);
+
+    return date;
+  }
+
+  private getNextHabitDate(habit: Habit, dateToCheck: Date) : Date{
+    var date = new Date(dateToCheck);
+    do {
+      date.setDate(date.getDate() + 1);
+    }
+    while (this.habitsForDate([habit], date).length == 0);
+
+    return date;
+  }
+
   public markStreakForDate(habit: Habit, habitStreaks: HabitStreak[], dateToCheck: Date, markAsCompleted: boolean, newHabitStreak: HabitStreak) : HabitStreak[] {
     //The habit was checked
     if (markAsCompleted) {
@@ -77,20 +97,12 @@ export class HabitLogicService {
         newHabitStreak.EndDate = new Date(streak.EndDate);
         newHabitStreak.StartDate = new Date(streak.StartDate);
 
-        var date = new Date(dateToCheck);
-        do {
-          date.setDate(date.getDate() + 1);
-        }
-        while (this.habitsForDate([habit], date).length == 0);
+        var date = this.getNextHabitDate(habit, dateToCheck);
         newHabitStreak.StartDate.setFullYear(date.getFullYear());
         newHabitStreak.StartDate.setMonth(date.getMonth());
         newHabitStreak.StartDate.setDate(date.getDate());
 
-        date = new Date(dateToCheck);
-        do {
-          date.setDate(date.getDate() - 1);
-        }
-        while (this.habitsForDate([habit], date).length == 0);
+        date = this.getPreviousHabitDate(habit, dateToCheck);
         streak.EndDate.setFullYear(date.getFullYear());
         streak.EndDate.setMonth(date.getMonth());
         streak.EndDate.setDate(date.getDate());
@@ -107,21 +119,13 @@ export class HabitLogicService {
   }
 
   private getStreakBeforeDate(habitStreaks : HabitStreak[], dateToCheck : Date, habit : Habit) : HabitStreak | undefined{
-    var date = new Date(dateToCheck);
-    do {
-      date.setDate(date.getDate() - 1);
-    }
-    while (this.habitsForDate([habit], date).length == 0);
+    var date = this.getPreviousHabitDate(habit, dateToCheck);
 
     return this.getStreakForDate(habitStreaks, date);
   }
 
   private getStreakAfterDate(habitStreaks : HabitStreak[], dateToCheck : Date, habit : Habit) : HabitStreak | undefined{
-    var date = new Date(dateToCheck);
-    do {
-      date.setDate(date.getDate() + 1);
-    }
-    while (this.habitsForDate([habit], date).length == 0);
+    var date = this.getNextHabitDate(habit, dateToCheck);
 
     return this.getStreakForDate(habitStreaks, date);
   }
