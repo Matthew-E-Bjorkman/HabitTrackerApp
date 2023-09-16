@@ -5,7 +5,8 @@
 </ion-header>
 <ion-content class="ion-padding" color="primary">
   <ion-item style="border-bottom: 1px solid;">
-    <ion-label text-wrap>Are you sure you'd like to delete: <strong>{{objectName}}</strong>?</ion-label>
+    <ion-label *ngIf="!archivable" text-wrap>Are you sure you'd like to delete: <strong>{{objectName}}</strong>?</ion-label>
+    <ion-label *ngIf="archivable" text-wrap>Are you sure you'd like to delete: <strong>{{objectName}}</strong>? Or would you like to archive it and preserve data? This can be undone by editing the habit.</ion-label>
   </ion-item>
   <ion-item>
     <ion-button color="fire" class="row-button" (click)="confirm()">
@@ -13,6 +14,11 @@
     </ion-button>
     <ion-button color="primary" class="row-button" (click)="cancel()">
       Cancel
+    </ion-button>
+  </ion-item>
+  <ion-item>
+    <ion-button color="secondary" class="row-button" (click)="archive()" *ngIf="archivable">
+      Archive
     </ion-button>
   </ion-item>
 </ion-content>

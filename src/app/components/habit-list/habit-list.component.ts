@@ -33,6 +33,7 @@ export class HabitListComponent implements OnInit {
   public getHabits() {
     this.habitRepoService.getHabits().then((result) => {
       if (result) {
+        result = result.filter((habit) => !habit.IsArchived);
         this.habits = this.habitLogicService.habitsForDate(result, this.dateToView)
         this.getHabitStreaks();
       }

@@ -13,16 +13,21 @@ export class DeleteConfirmationModalComponent  implements OnInit {
   @Input() object!: any;
   @Input() objectName!: string;
   @Input() popover!: IonPopover;
+  @Input() archivable: boolean = false;
 
   constructor() { }
 
   ngOnInit() {}
 
   public confirm() {
-    this.popover.dismiss(true);
+    this.popover.dismiss('delete');
+  }
+
+  public archive() {
+    this.popover.dismiss('archive');
   }
 
   public cancel() {
-    this.popover.dismiss(false);
+    this.popover.dismiss('cancel');
   }
 }

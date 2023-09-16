@@ -36,6 +36,7 @@ export class HabitManagerComponent implements OnInit {
   }
 
   public createHabit(habit: Habit) {
+    habit.IsArchived = false;
     this.habitRepoService.saveHabit(habit);
   }
 
@@ -44,16 +45,21 @@ export class HabitManagerComponent implements OnInit {
       component: DeleteConfirmationModalComponent,
       componentProps: {
         objectName: habit.Name,
-        object: habit
+        object: habit,
+        archivable: !habit.IsArchived
       }
     });
 
     popover.onDidDismiss().then((event) => {
-      if (event && event.data) {
+      if (event && event.data == 'delete') {
         for (let reminder of habit.Reminders) {
           this.habitLogicService.cancelReminder(reminder);
         }
         this.habitRepoService.deleteHabit(habit);
+      }
+      else if (event && event.data == 'archive') {
+        habit.IsArchived = true;
+        this.habitRepoService.saveHabit(habit);
       }
     });
 
