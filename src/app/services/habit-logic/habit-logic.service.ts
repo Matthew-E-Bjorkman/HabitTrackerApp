@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { LocalNotifications, Schedule, ScheduleEvery, Weekday } from '@capacitor/local-notifications';
+import { LocalNotifications, Schedule, Weekday } from '@capacitor/local-notifications';
 import { HabitFrequencyCategory } from 'src/app/shared/data-classes/data-enums';
 import { Habit, HabitReminder, HabitStreak } from 'src/app/shared/data-classes/data-objects';
 import { Platform } from '@ionic/angular';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
 
 @Injectable({
   providedIn: 'root'
@@ -304,19 +305,28 @@ export class HabitLogicService {
 
     var csv = this.convertToCSV(headers, habits);
 
-    var exportedFilename = 'habits.csv';
-
-    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    var link = document.createElement("a");
-    if (link.download !== undefined) { // feature detection
-        // Browsers that support HTML5 download attribute
-        var url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", exportedFilename);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    if (this.platform.is('android')) {
+      Filesystem.writeFile({
+        path: 'chained_habit_tracker/Habits.csv',
+        data: csv,
+        directory: Directory.Documents,
+        encoding: Encoding.UTF8,
+        recursive: true
+      });
+    } else {
+      var exportedFilename = 'habits.csv';
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      var link = document.createElement("a");
+      if (link.download !== undefined) { // feature detection
+          // Browsers that support HTML5 download attribute
+          var url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", exportedFilename);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      }
     }
   }
 
@@ -331,19 +341,28 @@ export class HabitLogicService {
     
     var csv = this.convertToCSV(headers, habitStreaks);
 
-    var exportedFilename = 'habitStreaks.csv';
-
-    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    var link = document.createElement("a");
-    if (link.download !== undefined) { // feature detection
-        // Browsers that support HTML5 download attribute
-        var url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", exportedFilename);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    if (this.platform.is('android')) {
+      Filesystem.writeFile({
+        path: 'chained_habit_tracker/Habit_Streaks.csv',
+        data: csv,
+        directory: Directory.Documents,
+        encoding: Encoding.UTF8,
+        recursive: true
+      });
+    } else {
+      var exportedFilename = 'habit_streaks.csv';
+      var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      var link = document.createElement("a");
+      if (link.download !== undefined) { // feature detection
+          // Browsers that support HTML5 download attribute
+          var url = URL.createObjectURL(blob);
+          link.setAttribute("href", url);
+          link.setAttribute("download", exportedFilename);
+          link.style.visibility = 'hidden';
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      }
     }
   }
 
@@ -366,7 +385,7 @@ export class HabitLogicService {
         for (var index in objArray[i]) {
             if (line != '') line += ','
             var propVal = objArray[i][index];
-            var propValText = typeof propVal == 'object' ? JSON.stringify(propVal).replace(/,/g,';') : propVal;
+            var propValText = typeof propVal == 'object' ? `"${JSON.stringify(propVal).replace(/"/g,'""')}"` : propVal;
             line += propValText;
         }
 

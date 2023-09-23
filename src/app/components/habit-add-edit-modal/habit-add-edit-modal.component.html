@@ -22,11 +22,10 @@
     </ion-input>
   </ion-item>
 
-  <ion-item>
+  <ion-item (click)="changeIcon()">
     <ion-input 
       label="Habit Icon:" 
-      type="button" 
-      (click)="changeIcon()">
+      type="button">
     </ion-input>
     <ion-icon name="{{habit.Icon}}"></ion-icon>
   </ion-item>
