@@ -4,4 +4,5 @@
     <string name="title_activity_main">Chained</string>
     <string name="package_name">com.chainedhabits</string>
     <string name="custom_url_scheme">com.chainedhabits</string>
+    <string name="admob_app_id">ca-app-pub-9497540219544165~5921686800</string>
 </resources>
