@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { LocalNotifications, Schedule } from '@capacitor/local-notifications';
+import { LocalNotifications, Schedule, ScheduleEvery, Weekday } from '@capacitor/local-notifications';
 import { HabitFrequencyCategory } from 'src/app/shared/data-classes/data-enums';
 import { Habit, HabitReminder, HabitStreak } from 'src/app/shared/data-classes/data-objects';
 import { Platform } from '@ionic/angular';
@@ -11,11 +11,30 @@ export class HabitLogicService {
   constructor(private platform: Platform) { }
 
   private dayOfWeekAsString(dayIndex: number) {
-    return ["Sunday", "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex] || '';
+    return ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][dayIndex] || '';
   }
 
   private dayOfMonthAsString(dayIndex: number) {
     return ["1st","2nd","3rd","4th","5th","6th","7th","8th","9th","10th","11th","12th","13th","14th","15th","16th","17th","18th","19th","20th","21st","22nd","23rd","24th","25th","26th","27th","28th","29th","30th","31st"][dayIndex] || '';
+  }
+
+  private dayOfWeekAsNumber(dayString: string) {
+    switch (dayString) {
+      case "Sunday": return 0;
+      case "Monday": return 1;
+      case "Tuesday": return 2;
+      case "Wednesday": return 3;
+      case "Thursday": return 4;
+      case "Friday": return 5;
+      case "Saturday": return 6;
+      default: return -1;
+    }
+  }
+
+  private dayOfMonthAsNumber(dayString: string) {
+    if (dayString.length === 3) return Number.parseInt(dayString.substring(0,1));
+    else if (dayString.length === 4) return Number.parseInt(dayString.substring(0,2));
+    return -1;
   }
 
   public habitsForDate(habits: Habit[], dateToView: Date): Habit[] {
@@ -170,7 +189,7 @@ export class HabitLogicService {
       for (let habit of habits) {
         for (let reminder of habit.Reminders) {
           if (!result || !result.notifications.find((notification) => {
-            return notification.id === reminder.NotificationSID
+            return reminder.NotificationSIDs.indexOf(notification.id) >= 0;
           })) 
           {
             this.scheduleReminder(reminder, habit);
@@ -186,31 +205,45 @@ export class HabitLogicService {
     const notificationDate = new Date(reminder.ReminderTime.substring(0, reminder.ReminderTime.length-1));
     notificationDate.setFullYear(now.getFullYear(), now.getMonth(), now.getDate());
 
-    if (notificationDate <= now) {
-      notificationDate.setDate(notificationDate.getDate() + 1);
-    }
+    var notifications : Schedule[] = [];
 
     if (habit.FrequencyCategory == HabitFrequencyCategory.Daily) {
       scheduleBody = {
-        at: notificationDate,
-        every: 'day',
+        on: {
+          hour: notificationDate.getHours(),
+          minute: notificationDate.getMinutes()
+        },
         allowWhileIdle: true
       }
+      reminder.NotificationSIDs.push(this.getUniqueInt());
+      notifications.push(scheduleBody);
     }
     else if (habit.FrequencyCategory == HabitFrequencyCategory.Weekly) {
-      return; //Need to adjust to multiple SIDs, schedule a notif per day of period
-      scheduleBody = {
-        at: notificationDate,
-        every: 'week',
-        allowWhileIdle: true
+      for (let weekday of habit.FrequencyCategoryValues) {
+        scheduleBody = {
+          on: {
+            weekday: Weekday[weekday as keyof typeof Weekday],
+            hour: notificationDate.getHours(),
+            minute: notificationDate.getMinutes()
+          },
+          allowWhileIdle: true
+        }
+        reminder.NotificationSIDs.push(this.getUniqueInt());
+        notifications.push(scheduleBody);
       }
     }
     else {
-      return;
-      scheduleBody = {
-        at: notificationDate,
-        every: 'month',
-        allowWhileIdle: true
+      for (let day of habit.FrequencyCategoryValues) {
+        scheduleBody = {
+          on: {
+            day: this.dayOfMonthAsNumber(day),
+            hour: notificationDate.getHours(),
+            minute: notificationDate.getMinutes()
+          },
+          allowWhileIdle: true
+        }
+        reminder.NotificationSIDs.push(this.getUniqueInt());
+        notifications.push(scheduleBody);
       }
     }
 
@@ -235,22 +268,26 @@ export class HabitLogicService {
       return;
     }
 
-    LocalNotifications.schedule({
-      notifications: [{
-        id: reminder.NotificationSID,
-        body: `Time to complete habit: ${habit.Name}`,
-        title: habit.Name,
-        schedule: scheduleBody
-      }]
-    });
+    for (let notification of notifications) {
+      LocalNotifications.schedule({
+        notifications: [{
+          id: reminder.NotificationSIDs[notifications.indexOf(notification)],
+          body: `Time to complete habit: ${habit.Name}`,
+          title: habit.Name,
+          schedule: notification
+        }]
+      });
+    } 
   }
 
   public cancelReminder(reminder: HabitReminder) {
-    LocalNotifications.cancel({
-      notifications:[
-        {id:reminder.NotificationSID}
-      ]
-    });
+    for (let notificationSID of reminder.NotificationSIDs) {
+      LocalNotifications.cancel({
+        notifications:[
+          {id:notificationSID}
+        ]
+      });
+    }
   }
 
   public exportHabitsToCSV(habits: Habit[]) {
@@ -337,5 +374,10 @@ export class HabitLogicService {
     }
 
     return str;
+  }
+
+  private getUniqueInt() : number {
+    var numberString = Date.now().toString().substring(4,13)
+    return Number.parseInt(numberString);
   }
 }

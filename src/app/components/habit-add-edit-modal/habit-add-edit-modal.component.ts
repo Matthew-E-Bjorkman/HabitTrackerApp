@@ -58,7 +58,7 @@ export class HabitAddEditModalComponent  implements OnInit {
       this.habit = this.origHabit;
     }
 
-    this.currentReminder = this.habitRepoService.getNewHabitReminder(this.habit);
+    this.resetReminder();
   }
 
   public habitFrequencyChanged(newFrequency: HabitFrequencyCategory) {

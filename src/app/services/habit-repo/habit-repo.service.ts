@@ -86,7 +86,7 @@ export class HabitRepoService {
     var habitReminder = new HabitReminder();
     habitReminder.HabitSID = habit.HabitSID;
     habitReminder.HabitReminderSID = uuid();
-    habitReminder.NotificationSID = this.getUniqueInt();
+    habitReminder.NotificationSIDs = [];
     habitReminder.ReminderTime = '1900-01-01T00:00:00.000Z';
     return habitReminder;
   }
@@ -158,9 +158,5 @@ export class HabitRepoService {
     });
   }
 
-  //Common
-  public getUniqueInt() : number {
-    var numberString = Date.now().toString().substring(4,13)
-    return Number.parseInt(numberString);
-  }
+  
 }
