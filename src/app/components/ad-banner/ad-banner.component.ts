@@ -24,8 +24,8 @@ export class AdBannerComponent  implements OnInit {
       const options: BannerAdOptions = {
         adId: adId,
         adSize: BannerAdSize.BANNER,
-        position: BannerAdPosition.BOTTOM_CENTER,
-        margin: 50,
+        position: BannerAdPosition.TOP_CENTER,
+        margin: 75,
         isTesting: true
       };
       AdMob.showBanner(options);
