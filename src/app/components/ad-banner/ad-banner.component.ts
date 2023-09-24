@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AdMob, AdMobBannerSize, BannerAdOptions, BannerAdPluginEvents, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
+import { AdMob, BannerAdOptions, BannerAdPosition, BannerAdSize } from '@capacitor-community/admob';
 
 @Component({
   selector: 'app-ad-banner',
@@ -25,7 +25,7 @@ export class AdBannerComponent  implements OnInit {
         adId: adId,
         adSize: BannerAdSize.BANNER,
         position: BannerAdPosition.TOP_CENTER,
-        margin: 75,
+        margin: 60,
         isTesting: true
       };
       AdMob.showBanner(options);
