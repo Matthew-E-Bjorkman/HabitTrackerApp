@@ -1,27 +1,20 @@
-<ion-card>
+<ion-card color="primary">
   <ion-card-header>
     <ion-card-title class="vertical-align-content">
-      <ion-label>Habits:</ion-label>
-      <ion-label id="dateLabel"></ion-label>
-      <ion-button id="yesterdayButton" class="header-button" (click)="changeDate(false)"><ion-icon name="chevron-back"></ion-icon></ion-button>
-      <ion-button id="tomorrowButton" class="header-button" (click)="changeDate(true)"><ion-icon name="chevron-forward"></ion-icon></ion-button>
+      <ion-label class="override">Habits:</ion-label>
+      <ion-label id="dateLabel" class="override"></ion-label>
+      <ion-button id="yesterdayButton" class="header-button first" (click)="changeDate(false)" color="secondary"><ion-icon name="chevron-back" class="header-icon"></ion-icon></ion-button>
+      <ion-button id="tomorrowButton" class="header-button" (click)="changeDate(true)" color="secondary"><ion-icon name="chevron-forward" class="header-icon"></ion-icon></ion-button>
     </ion-card-title>
   </ion-card-header>
   <ion-card-content>
     <ion-list *ngFor="let habit of habits" class="ion-list">
-      <ion-item class="ion-item" *ngIf="!habit.IsArchived" no-lines>
+      <ion-item class="ion-item" *ngIf="!habit.IsArchived" no-lines color="secondary">
         <ion-checkbox justify="start" class="habit-checkbox" (ionChange)="habitChecked($event, habit)" [checked]="habitStreaks[habit.HabitSID]"></ion-checkbox>
         <ion-icon name="{{habit.Icon}}"></ion-icon>
-        <ion-label text-wrap>
-          {{habit.Name}}
+        <ion-label class="ion-text-wrap">
+          <strong>{{habit.Name}}</strong>
         </ion-label>
-        <!-- THE BELOW VERSION CURRENTLY IS BUGGED IN IONIC. WAITING FOR A FIX -->
-        <!-- <ion-checkbox justify="start" labelPlacement="end" class="habit-checkbox" (ionChange)="habitChecked($event, habit)" [checked]="habitStreaks[habit.HabitSID]">
-          <ion-label text-wrap class="vertical-align-content">
-            <ion-icon name="{{habit.Icon}}" class="checkbox-icon"></ion-icon>
-            {{habit.Name}}
-          </ion-label>
-        </ion-checkbox> -->
         <ion-button disabled="true">
           <ion-icon name="flame" color="fire"></ion-icon>
           {{habitStreaks[habit.HabitSID]?.StreakCount ?? 0}}

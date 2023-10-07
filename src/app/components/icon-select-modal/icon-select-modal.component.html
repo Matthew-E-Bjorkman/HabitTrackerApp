@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="tertiary">
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button (click)="cancelChanges()">Cancel</ion-button>
     </ion-buttons>
@@ -10,21 +10,21 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content color="primary" class="ion-padding">
+<ion-content color="secondary" class="ion-padding">
   <ion-list id="modal-list" [inset]="true">
     <div *ngFor="let sysIcon of filteredIcons; let i = index">
-      <ion-item *ngIf="i % 4 == 0">
+      <ion-item *ngIf="i % 4 == 0" color="primary">
         <div class="row">
-          <ion-button (click)="selected(sysIcon)" class="row-button"> 
+          <ion-button (click)="selected(sysIcon)" class="row-button" color="secondary"> 
             <ion-icon name="{{sysIcon.name}}"></ion-icon>
           </ion-button>
-          <ion-button *ngIf="i + 1 < filteredIcons.length" (click)="selected(filteredIcons[i+1])" class="row-button"> 
+          <ion-button *ngIf="i + 1 < filteredIcons.length" (click)="selected(filteredIcons[i+1])" class="row-button" color="secondary"> 
             <ion-icon name="{{filteredIcons[i+1].name}}"></ion-icon>
           </ion-button>
-          <ion-button *ngIf="i + 2 < filteredIcons.length" (click)="selected(filteredIcons[i+2])" class="row-button"> 
+          <ion-button *ngIf="i + 2 < filteredIcons.length" (click)="selected(filteredIcons[i+2])" class="row-button" color="secondary"> 
             <ion-icon name="{{filteredIcons[i+2].name}}"></ion-icon>
           </ion-button>
-          <ion-button *ngIf="i + 3 < filteredIcons.length" (click)="selected(filteredIcons[i+3])" class="row-button"> 
+          <ion-button *ngIf="i + 3 < filteredIcons.length" (click)="selected(filteredIcons[i+3])" class="row-button" color="secondary"> 
             <ion-icon name="{{filteredIcons[i+3].name}}"></ion-icon>
           </ion-button>
         </div>

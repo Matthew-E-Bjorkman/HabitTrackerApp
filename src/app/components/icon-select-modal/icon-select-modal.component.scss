@@ -1,7 +1,17 @@
 .row {
-    width: 100%;
+    width: 102%;
 }
 
 .row-button {
-    width: 23%;
+    width: 23.4%;
+}
+
+ion-icon {
+    width: 30px;
+    height: 30px;
+}
+
+ion-list {
+    background: var(--ion-color-primary);
+    border-radius: 15px;
 }

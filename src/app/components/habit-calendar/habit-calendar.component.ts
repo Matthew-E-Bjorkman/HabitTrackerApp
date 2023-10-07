@@ -64,8 +64,8 @@ export class HabitCalendarComponent  implements OnInit {
       for (let i = 0; i < habitStreak.StreakCount; i++) {
         this.highlightedDates.push({
           date: dateToAdd.toISOString().split('T')[0],
-          textColor: '#09721b',
-          backgroundColor:'#c8e5d0'
+          textColor: 'white',
+          backgroundColor:'#4884e6'
         });
         
         var nextDate = this.habitLogicService.getNextHabitDate(habit, dateToAdd);
@@ -73,4 +73,8 @@ export class HabitCalendarComponent  implements OnInit {
       }
     }
   }
+
+  public showDate = (dateString: string) => {
+    return false;
+  };
 }

@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar color="tertiary">
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-button (click)="cancel()">Cancel</ion-button>
     </ion-buttons>
@@ -10,7 +10,7 @@
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding" color="primary">
-  <ion-item>
+  <ion-item color="secondary" lines="none">
     <ion-input 
       label="Habit Name:" 
       labelPlacement="floating" 
@@ -22,7 +22,7 @@
     </ion-input>
   </ion-item>
 
-  <ion-item (click)="changeIcon()">
+  <ion-item (click)="changeIcon()" color="secondary" lines="none">
     <ion-input 
       label="Habit Icon:" 
       type="button">
@@ -30,7 +30,7 @@
     <ion-icon name="{{habit.Icon}}"></ion-icon>
   </ion-item>
 
-  <ion-item>
+  <ion-item color="secondary" lines="none">
     <ion-select 
       label="Habit Type:" 
       [(ngModel)]="habit.Type">
@@ -42,7 +42,7 @@
     </ion-select>
   </ion-item>
 
-  <ion-item>
+  <ion-item color="secondary" lines="none">
     <ion-select 
       label="Habit Schedule:" 
       [(ngModel)]="habit.FrequencyCategory" 
@@ -55,7 +55,7 @@
     </ion-select>
   </ion-item>
 
-  <ion-item *ngIf="habitDailyOrNone | async">
+  <ion-item *ngIf="habitDailyOrNone | async" color="secondary" lines="none">
     <ion-select 
       label="Habit Scheduled Days:" 
       labelPlacement="floating" 
@@ -69,7 +69,7 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
-  <ion-item *ngIf="habitWeekly | async">
+  <ion-item *ngIf="habitWeekly | async" color="secondary" lines="none">
     <ion-select 
       label="Habit Schedule Days:" 
       labelPlacement="floating" 
@@ -81,7 +81,7 @@
       </ion-select-option>
     </ion-select>
   </ion-item>
-  <ion-item *ngIf="habitMonthly | async">
+  <ion-item *ngIf="habitMonthly | async" color="secondary" lines="none">
     <ion-select label="Habit Schedule Days:" labelPlacement="floating" [(ngModel)]="habit.FrequencyCategoryValues" [multiple]="true">
       <ion-select-option *ngFor="let habitMonthlyFrequencyKey of habitMonthlyFrequencyKeys" 
         [value]="habitMonthlyFrequencyKey">
@@ -90,36 +90,30 @@
     </ion-select>
   </ion-item>
   
-  <ion-item *ngFor="let reminder of habit.Reminders" class="ion-item">
+  <ion-item *ngFor="let reminder of habit.Reminders" class="ion-item" color="secondary" lines="none">
     <ion-icon name="notifications"></ion-icon>
     <ion-label>{{reminder.ReminderTime | date:'shortTime':'UTC'}}</ion-label>
     <ion-button class="ion-button" (click)="editReminder(reminder);reminderModal.present();"><ion-icon name="pencil"></ion-icon></ion-button>
     <ion-button class="ion-button" (click)="cancelReminder(reminder);habit.Reminders.splice(habit.Reminders.indexOf(reminder),1)"><ion-icon name="trash"></ion-icon></ion-button>
   </ion-item>
 
-  <ion-item>
-    <ion-button id="open-modal" expand="block" class="reminder-button">Add Reminder</ion-button>
+  <ion-item color="primary" class="reminder-item" lines="none">
+    <ion-button color="secondary" id="open-modal" expand="block" class="reminder-button">Add Reminder</ion-button>
     <ion-modal trigger="open-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]" (willDismiss)="resetReminder()" #reminderModal>
       <ng-template>
-        <ion-list>
-          <ion-item>
-            <ion-input>
-              <ion-datetime presentation="time" [(ngModel)]="currentReminder.ReminderTime"></ion-datetime>
-            </ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-button expand="block" class="reminder-button" (click)="saveReminder();reminderModal.dismiss();">
-              Save Reminder
-            </ion-button>
-          </ion-item>
-        </ion-list>
+        <ion-header>
+          <ion-datetime color="primary" presentation="time" [(ngModel)]="currentReminder.ReminderTime"></ion-datetime>
+          <ion-button color="primary" expand="block" (click)="saveReminder();reminderModal.dismiss();">
+            Save Reminder
+          </ion-button>
+        </ion-header>
       </ng-template>
     </ion-modal>
   </ion-item>
 
   <div *ngIf="validationFailed | async" >
     <ion-item *ngFor="let error of validationErrors" color="fire">
-      <ion-label text-wrap>{{error.Message}}</ion-label>
+      <ion-label class="ion-text-wrap">{{error.Message}}</ion-label>
     </ion-item>
   </div>
 </ion-content>

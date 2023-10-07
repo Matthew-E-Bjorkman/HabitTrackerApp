@@ -1,6 +1,6 @@
 .reminder-button {
     width: 100%; 
-    height: 60%;
+    height: 40px;
 }
 
 .modal-block {
@@ -13,4 +13,31 @@
 
 ion-modal {
 --height: auto;
+}
+
+ion-item {
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-size: large;
+    border-color: var(--ion-color-primary);
+}
+
+ion-select,
+ion-input {
+    --highlight-color-focused: var(--ion-color-primary);
+    --highlight-color-invalid: var(--ion-color-primary);
+    --highlight-color-valid: var(--ion-color-primary);
+}
+
+ion-datetime {
+    --wheel-fade-background-rgb: rgb(0,0,0);
+}
+
+ng-template,
+.primary {
+    background: var(--ion-color-primary);
+}
+
+.reminder-item {
+    border: 0;
 }

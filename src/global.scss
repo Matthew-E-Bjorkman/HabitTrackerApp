@@ -26,26 +26,46 @@
 @import "@ionic/angular/css/flex-utils.css";
 
 /* Custom */
+ion-card-title {
+	height: 55px;
+}
+
+ion-list > ion-item {
+	border-radius: 8px;
+	border: 2px solid;
+	margin-bottom: 5px;
+}	
+
+ion-checkbox {
+	--size: 25px;
+	--checkmark-width: 5px;
+
+	--checkbox-background-checked: var(--ion-color-primary);
+	--border-color-checked: var(--ion-color-primary);
+	--checkmark-color: var(--ion-color-light);
+
+	--checkbox-background: var(--ion-color-secondary);
+	--border-color: var(--ion-color-primary);
+}
+
+.vertical-align-content
+{
+     display: flex!important;
+     align-content: center!important;
+     align-items: center!important;
+}
+
 .ion-content {
     background: var(--ion-color-secondary);
 }
 
 .ion-content .ion-list {
-    background: var(--ion-color-secondary);
+    background: var(--ion-color-primary);
     padding: 0px;
 }
 
 .ion-content .ion-list .ion-item {
-    color: var(--ion-color-secondary);
-}
-
-:root {
-	--ion-color-fire: #ff2424;
-	--ion-color-fire-rgb: 255,36,36;
-	--ion-color-fire-contrast: #ffffff;
-	--ion-color-fire-contrast-rgb: 255,255,255;
-	--ion-color-fire-shade: #e02020;
-	--ion-color-fire-tint: #ff3a3a;
+    color: var(--ion-color-primary);
 }
 
 .ion-color-fire {
@@ -55,4 +75,13 @@
 	--ion-color-contrast-rgb: var(--ion-color-fire-contrast-rgb);
 	--ion-color-shade: var(--ion-color-fire-shade);
 	--ion-color-tint: var(--ion-color-fire-tint);
+}
+
+.ion-color-dark {
+	--ion-color-base: var(--ion-color-dark);
+	--ion-color-base-rgb: var(--ion-color-dark-rgb);
+	--ion-color-contrast: var(--ion-color-dark-contrast);
+	--ion-color-contrast-rgb: var(--ion-color-dark-contrast-rgb);
+	--ion-color-shade: var(--ion-color-dark-shade);
+	--ion-color-tint: var(--ion-color-dark-tint);
 }

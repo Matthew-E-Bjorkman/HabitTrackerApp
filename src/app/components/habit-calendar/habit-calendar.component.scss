@@ -1,4 +1,22 @@
 .datetime {
-    border: 1px solid;
     border-radius: 10px;
+	border: 2px solid;
+	color: var(--ion-color-primary);
+    background: var(--ion-color-secondary);
+    --wheel-fade-background-rgb: rgb(0,0,0);
+}
+
+ion-datetime::part(disabled) {
+    opacity: 1;
+}
+
+ion-datetime::part(native) {
+    color: var(--ion-color-primary)
+}
+
+ion-select,
+ion-input {
+    --highlight-color-focused: var(--ion-color-secondary);
+    --highlight-color-invalid: var(--ion-color-secondary);
+    --highlight-color-valid: var(--ion-color-secondary);
 }

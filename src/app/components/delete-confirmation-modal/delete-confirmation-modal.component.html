@@ -1,24 +1,26 @@
 <ion-header>
-  <ion-toolbar color="tertiary">
+  <ion-toolbar color="primary">
     <ion-title>Delete Confirmation</ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content class="ion-padding" color="primary">
-  <ion-item style="border-bottom: 1px solid;">
-    <ion-label *ngIf="!archivable" text-wrap>Are you sure you'd like to delete: <strong>{{objectName}}</strong>?</ion-label>
-    <ion-label *ngIf="archivable" text-wrap>Are you sure you'd like to delete: <strong>{{objectName}}</strong>? Or would you like to archive it and preserve data? This can be undone by editing the habit.</ion-label>
+  <ion-item class="header" color="secondary" lines="none">
+    <ion-label *ngIf="!archivable" class="ion-text-wrap">Are you sure you'd like to delete: <strong>{{objectName}}</strong>?</ion-label>
+    <ion-label *ngIf="archivable" class="ion-text-wrap">Are you sure you'd like to delete: <strong>{{objectName}}</strong>? <br /><br /> Or would you like to archive it and preserve data? <br /><br /> This can be undone by editing the habit.</ion-label>
   </ion-item>
-  <ion-item>
+  <ion-item color="secondary" lines="none">
     <ion-button color="fire" class="row-button" (click)="confirm()">
-      Delete
-    </ion-button>
-    <ion-button color="primary" class="row-button" (click)="cancel()">
-      Cancel
+      <strong>Delete</strong>
     </ion-button>
   </ion-item>
-  <ion-item>
-    <ion-button color="secondary" class="row-button" (click)="archive()" *ngIf="archivable">
-      Archive
+  <ion-item color="secondary" lines="none" *ngIf="archivable">
+    <ion-button color="medium" class="row-button" (click)="archive()">
+      <strong>Archive</strong>
+    </ion-button>
+  </ion-item>
+  <ion-item color="secondary" lines="none">
+    <ion-button color="primary" class="row-button" (click)="cancel()">
+      <strong>Cancel</strong>
     </ion-button>
   </ion-item>
 </ion-content>

@@ -20,8 +20,20 @@ ion-item > ion-button[disabled] {
     width: 15%;
 }
 
+.header-button.first {
+    margin-left: auto;
+}
+
 ion-card-title > ion-label {
     margin-right: 12px;
+}
+
+.override {
+    margin-left: 0px;
+}
+
+ion-label {
+    margin-left: 6px;
 }
 
 .checkbox-icon {

@@ -1,12 +1,16 @@
-<ion-card>
+<ion-card color="primary">
   <ion-card-header>
-    <ion-card-title>Manage Habits</ion-card-title>
+    <ion-card-title class="vertical-align-content">
+      <ion-label class="override">Manage Habits:</ion-label>
+    </ion-card-title>
   </ion-card-header>
   <ion-card-content>
     <ion-list *ngFor="let habit of habits" class="ion-list">
-      <ion-item class="ion-item">
+      <ion-item class="ion-item" color="secondary">
         <ion-icon name="{{habit.Icon}}"></ion-icon>
-        <ion-label text-wrap>{{habit.Name}}</ion-label>
+        <ion-label class="ion-text-wrap">
+          <strong>{{habit.Name}}</strong>
+        </ion-label>
         <ion-button (click)="addEditHabit(habit)">
           <ion-icon slot="icon-only" name="pencil"></ion-icon>
         </ion-button>
@@ -15,7 +19,7 @@
         </ion-button>
       </ion-item>
     </ion-list>
-    <ion-button (click)="addEditHabit(null)" expand="block">
+    <ion-button (click)="addEditHabit(null)" expand="block" color="secondary">
       <ion-icon slot="icon-only" name="add"></ion-icon>
     </ion-button>
   </ion-card-content>
